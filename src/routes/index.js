@@ -1,7 +1,8 @@
-import Home from "~/components/Home";
-import InHome from "~/components/InHome";
-import InHospital from "~/components/InHospital";
-import LiveHealthy from "~/components/LiveHealthy";
+import Login from "~/components/Auth/Login";
+import Home from "~/pages/Home";
+import InHome from "~/pages/InHome";
+import InHospital from "~/pages/InHospital";
+import LiveHealthy from "~/pages/LiveHealthy";
 import routes from "~/config/routes";
 import DefaultLayout from "~/layouts/DefaultLayout";
 
@@ -25,6 +26,11 @@ const publicRoutes = [
 		path: routes.liveHealthy,
 		component: LiveHealthy,
 		layout: DefaultLayout,
+	},
+	{
+		path: routes.login,
+		component: Login,
+		layout: null,
 	},
 ]
 
