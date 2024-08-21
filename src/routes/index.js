@@ -1,4 +1,4 @@
-import Login from "~/components/Auth/Login";
+import Login from "~/pages/Auth/Login";
 import Home from "~/pages/Home";
 import InHome from "~/pages/InHome";
 import InHospital from "~/pages/InHospital";
