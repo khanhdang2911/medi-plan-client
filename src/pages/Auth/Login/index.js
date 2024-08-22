@@ -6,24 +6,23 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import axios from '~/utils/httpRequest'
 import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
+import InputField from '~/components/InputField'
 const cx = classNames.bind(styles)
 
 function Login() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
-	const [emailErrorMessage, setEmailErrorMessage] = useState('')
-	const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+	const [errors, setErrors] = useState({})
 	const [errorMessage, setErrorMessage] = useState('')
 	const handleOnchangeInfo = (e) => {
-		const value = e.target.value
-		const name = e.target.name
-		if (name === 'password') {
-			setPasswordErrorMessage('')
-			setPassword(value)
-		} else {
+		const { name, value } = e.target
+		setErrors((prev) => ({ ...prev, [name]: '' }))
+		setErrorMessage('')
+		if (name === 'email') {
 			setEmail(value)
-			setEmailErrorMessage('')
+		} else if (name === 'password') {
+			setPassword(value)
 		}
 	}
 
@@ -31,26 +30,21 @@ function Login() {
 		setShowPassword(!showPassword)
 	}
 
-	const validateEmailRegex = /^\S+@\S+\.\S+$/
-
-	const handleInvalidValue = () => {
-		let check = true
-		if (!validateEmailRegex.test(email)) {
-			setEmailErrorMessage('Please enter the correct email format')
-			check = false
+	const validate = () => {
+		const errors = {}
+		if (!/^\S+@\S+\.\S+$/.test(email)) {
+			errors.email = 'Please enter the correct email format'
 		}
 		if (!password) {
-			setPasswordErrorMessage('Please enter the password')
-			check = false
+			errors.password = 'Please enter the password'
 		}
-		return check
+		return errors
 	}
 	const handleSubmit = async (e) => {
-		setEmailErrorMessage('')
-		setPasswordErrorMessage('')
 		e.preventDefault()
-		const check = handleInvalidValue()
-		if (!check) {
+		const errors = validate()
+		if (Object.keys(errors).length > 0) {
+			setErrors(errors)
 			return
 		}
 
@@ -70,44 +64,37 @@ function Login() {
 			<form className={cx('login-form')}>
 				<h4 className={cx('header-title')}>Log In</h4>
 				<span className={cx('error-message')}>{errorMessage}</span>
-				<div className={cx('form-control')}>
-					<label htmlFor='email'>Email:</label>
-					<div className={cx('input-form')}>
-						<input
-							type='text'
-							name='email'
-							id='email'
-							placeholder='Enter your email'
-							autoComplete='email'
-							value={email}
-							onChange={(e) => handleOnchangeInfo(e)}
-						/>
-					</div>
-					<span className={cx('error-message')}>{emailErrorMessage}</span>
-				</div>
-				<div className={cx('form-control')}>
-					<label htmlFor='password'>Password:</label>
-					<div className={cx('input-form')}>
-						<input
-							type={showPassword ? 'text' : 'password'}
-							name='password'
-							id='password'
-							placeholder='Enter your password'
-							autoComplete='current-password'
-							value={password}
-							onChange={(e) => {
-								handleOnchangeInfo(e)
-							}}
-						/>
+				<InputField
+					labelName='Email'
+					type='text'
+					name='email'
+					id='email'
+					placeholder='Enter your email'
+					autoComplete='email'
+					value={email}
+					onChange={(e) => handleOnchangeInfo(e)}
+					errors={errors}
+				/>
 
-						<FontAwesomeIcon
-							className={cx('icon-show-password')}
-							icon={showPassword ? faEyeSlash : faEye}
-							onClick={handleShowPassword}
-						/>
-					</div>
-					<span className={cx('error-message')}>{passwordErrorMessage}</span>
-				</div>
+				<InputField
+					labelName='Password'
+					type={showPassword ? 'text' : 'password'}
+					name='password'
+					id='password'
+					placeholder='Enter your password'
+					autoComplete='current-password'
+					value={password}
+					onChange={(e) => {
+						handleOnchangeInfo(e)
+					}}
+					errors={errors}
+				>
+					<FontAwesomeIcon
+						className={cx('icon-show-password')}
+						icon={showPassword ? faEyeSlash : faEye}
+						onClick={handleShowPassword}
+					/>
+				</InputField>
 				<div className={cx('form-control')}>
 					<button
 						type='submit'
