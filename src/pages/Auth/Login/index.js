@@ -7,52 +7,33 @@ import axios from '~/utils/httpRequest'
 import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
 import InputField from '~/components/InputField'
+import useForm from '~/hooks/useForm'
 const cx = classNames.bind(styles)
 
 function Login() {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
-	const [errors, setErrors] = useState({})
 	const [errorMessage, setErrorMessage] = useState('')
-	const handleOnchangeInfo = (e) => {
-		const { name, value } = e.target
-		setErrors((prev) => ({ ...prev, [name]: '' }))
-		setErrorMessage('')
-		if (name === 'email') {
-			setEmail(value)
-		} else if (name === 'password') {
-			setPassword(value)
-		}
-	}
+	const { values, errors, handleOnChangeInfo, validate } = useForm({
+		email: '',
+		password: '',
+	})
 
 	const handleShowPassword = () => {
 		setShowPassword(!showPassword)
 	}
 
-	const validate = () => {
-		const errors = {}
-		if (!/^\S+@\S+\.\S+$/.test(email)) {
-			errors.email = 'Please enter the correct email format'
-		}
-		if (!password) {
-			errors.password = 'Please enter the password'
-		}
-		return errors
-	}
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		const errors = validate()
-		if (Object.keys(errors).length > 0) {
-			setErrors(errors)
+		if (!validate()) {
 			return
 		}
 
 		try {
-			const userReq = await axios.post('/api/login', {
-				email,
-				password,
+			await axios.post('/api/login', {
+				email: values.email,
+				password: values.password,
 			})
+			console.log('Login successfully')
 		} catch (error) {
 			if (error.response && error.response.status === 401) {
 				setErrorMessage(error.response.data.errMessage)
@@ -71,8 +52,8 @@ function Login() {
 					id='email'
 					placeholder='Enter your email'
 					autoComplete='email'
-					value={email}
-					onChange={(e) => handleOnchangeInfo(e)}
+					value={values.email}
+					onChange={(e) => handleOnChangeInfo(e)}
 					errors={errors}
 				/>
 
@@ -83,9 +64,9 @@ function Login() {
 					id='password'
 					placeholder='Enter your password'
 					autoComplete='current-password'
-					value={password}
+					value={values.password}
 					onChange={(e) => {
-						handleOnchangeInfo(e)
+						handleOnChangeInfo(e)
 					}}
 					errors={errors}
 				>

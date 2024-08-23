@@ -5,6 +5,7 @@ import InHospital from "~/pages/InHospital";
 import LiveHealthy from "~/pages/LiveHealthy";
 import routes from "~/config/routes";
 import DefaultLayout from "~/layouts/DefaultLayout";
+import Register from "~/pages/Auth/Register";
 
 const publicRoutes = [
 	{
@@ -32,6 +33,11 @@ const publicRoutes = [
 		component: Login,
 		layout: null,
 	},
+	{
+		path: routes.register,
+		component: Register,
+		layout:null
+	}
 ]
 
 const privateRoutes = []
