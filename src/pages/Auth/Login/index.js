@@ -8,9 +8,11 @@ import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
+import { useNavigate } from 'react-router-dom'
 const cx = classNames.bind(styles)
 
 function Login() {
+	const navigate = useNavigate()
 	const [showPassword, setShowPassword] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const { values, errors, handleOnChangeInfo, validate } = useForm({
@@ -29,11 +31,13 @@ function Login() {
 		}
 
 		try {
-			await axios.post('/api/login', {
+			const response = await axios.post('/api/login', {
 				email: values.email,
 				password: values.password,
 			})
-			console.log('Login successfully')
+			const data = response.data
+			localStorage.setItem('access_token', data.access_token)
+			navigate('/')
 		} catch (error) {
 			if (error.response && error.response.status === 401) {
 				setErrorMessage(error.response.data.errMessage)
