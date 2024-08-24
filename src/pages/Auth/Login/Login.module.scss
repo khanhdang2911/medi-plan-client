@@ -3,7 +3,9 @@
 .wrapper {
 	background: rgb(121, 189, 115);
 	background: linear-gradient(90deg, rgba(121, 189, 115, 1) 0%, rgba(166, 189, 90, 1) 36%, rgba(76, 185, 152, 1) 94%);
+	max-height: 100vh;
 	height: 100vh;
+	overflow-y: auto;
 	display: flex;
 	align-items: center;
 	justify-content: center;

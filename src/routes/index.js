@@ -1,11 +1,14 @@
-import Login from "~/pages/Auth/Login";
-import Home from "~/pages/Home";
-import InHome from "~/pages/InHome";
-import InHospital from "~/pages/InHospital";
-import LiveHealthy from "~/pages/LiveHealthy";
-import routes from "~/config/routes";
-import DefaultLayout from "~/layouts/DefaultLayout";
-import Register from "~/pages/Auth/Register";
+/** @format */
+
+import Login from '~/pages/Auth/Login'
+import Home from '~/pages/Home'
+import InHome from '~/pages/InHome'
+import InHospital from '~/pages/InHospital'
+import LiveHealthy from '~/pages/LiveHealthy'
+import routes from '~/config/routes'
+import DefaultLayout from '~/layouts/DefaultLayout'
+import Register from '~/pages/Auth/Register'
+import AllUsePage from '~/pages/AllUserPage'
 
 const publicRoutes = [
 	{
@@ -36,10 +39,15 @@ const publicRoutes = [
 	{
 		path: routes.register,
 		component: Register,
-		layout:null
-	}
+		layout: null,
+	},
+	{
+		path: routes.allUserPage,
+		component: AllUsePage,
+		layout: null,
+	},
 ]
 
 const privateRoutes = []
 
-export {publicRoutes, privateRoutes}
+export { publicRoutes, privateRoutes }
