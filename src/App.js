@@ -1,11 +1,27 @@
 /** @format */
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Fragment } from 'react'
+import { Fragment, useContext, useEffect } from 'react'
 
 import { publicRoutes } from './routes'
 import DefaultLayout from './layouts/DefaultLayout'
+import axios from '~/utils/httpRequest'
+import { AuthContext } from './context/AuthContext'
 
 function App() {
+	const { setDataAuth, setLoading } = useContext(AuthContext)
+	useEffect(() => {
+		const getAccount = async () => {
+			try {
+				setLoading(true)
+				const userData = await axios.get('/api/account')
+				setDataAuth({ isAuthenticated: true, user: userData })
+				setLoading(false)
+			} catch (error) {
+				return error
+			}
+		}
+		getAccount()
+	}, [])
 	return (
 		<Router>
 			<Routes>

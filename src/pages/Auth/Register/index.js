@@ -22,7 +22,6 @@ function Register() {
 		password: '',
 		confirmPassword: '',
 		fullname: '',
-		address: '',
 		phonenumber: '',
 	})
 
@@ -131,17 +130,6 @@ function Register() {
 					errors={errors}
 				/>
 				<InputField
-					labelName='Address'
-					type='text'
-					name='address'
-					id='address'
-					placeholder='Enter your address'
-					autoComplete='address'
-					value={values.address}
-					onChange={(e) => handleOnChangeInfo(e)}
-					errors={errors}
-				/>
-				<InputField
 					labelName='Phone number'
 					type='text'
 					name='phonenumber'
@@ -153,7 +141,9 @@ function Register() {
 					errors={errors}
 				/>
 				<div className={cx('radio-box')}>
-					<p className={cx('radio-box-title')}>Gender</p>
+					<p className={cx('radio-box-title')}>
+						<b>Gender:</b>
+					</p>
 					<div className={cx('radio-box-control')}>
 						<input
 							type='radio'
@@ -178,8 +168,8 @@ function Register() {
 						/>
 						<label htmlFor='female'>Female</label>
 					</div>
-					<span className={cx('error-message')}>{genderError}</span>
 				</div>
+				<span className={cx('error-message')}>{genderError}</span>
 				<div className={cx('form-control')}>
 					<button
 						type='submit'
