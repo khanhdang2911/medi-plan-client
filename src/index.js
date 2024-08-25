@@ -7,12 +7,15 @@ import reportWebVitals from './reportWebVitals'
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import theme from './theme'
+import AuthWrapper from './context/AuthContext'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
 	<React.StrictMode>
 		<CssVarsProvider theme={theme}>
 			<CssBaseline />
-			<App />
+			<AuthWrapper>
+				<App />
+			</AuthWrapper>
 		</CssVarsProvider>
 	</React.StrictMode>
 )

@@ -5,11 +5,9 @@ const theme = extendTheme({
 	components: {
 		MuiCssBaseline: {
 			styleOverrides: {
-				html: {
-					fontSize: '62.5%',
-				},
+				html: {},
 				body: {
-					fontSize: '1.6rem',
+					fontSize: '0.875rem',
 				},
 			},
 		},
