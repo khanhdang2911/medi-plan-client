@@ -14,14 +14,17 @@ function DefaultLayout({ children }) {
 	const { loading } = useContext(AuthContext)
 	return (
 		<div className={cx('wrapper')}>
-			{loading && (
+			{false ? (
 				<Box sx={{ width: '100%' }}>
 					<LinearProgress />
 				</Box>
+			) : (
+				<>
+					<Header />
+					<div className={cx('content')}>{children}</div>
+					<Footer />
+				</>
 			)}
-			<Header />
-			<div className={cx('content')}>{children}</div>
-			<Footer />
 		</div>
 	)
 }
