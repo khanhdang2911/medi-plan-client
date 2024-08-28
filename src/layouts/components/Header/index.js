@@ -1,6 +1,6 @@
 /** @format */
 import Box from '@mui/material/Box'
-import { useContext } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { AuthContext } from '~/context/AuthContext'
 import images from '~/assets'
 import { Link } from 'react-router-dom'
@@ -10,8 +10,34 @@ import TextField from '@mui/material/TextField'
 import SearchIcon from '@mui/icons-material/Search'
 import Typography from '@mui/material/Typography'
 import LoginIcon from '@mui/icons-material/Login'
+import Avatar from '@mui/material/Avatar'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import PersonAdd from '@mui/icons-material/PersonAdd'
+import Settings from '@mui/icons-material/Settings'
+import Logout from '@mui/icons-material/Logout'
+
 function Header() {
-	const { dataAuth } = useContext(AuthContext)
+	const { dataAuth, setDataAuth } = useContext(AuthContext)
+	const [anchorEl, setAnchorEl] = useState(null)
+	const open = Boolean(anchorEl)
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget)
+	}
+	const handleClose = () => {
+		setAnchorEl(null)
+	}
+	const handleLogout = () => {
+		localStorage.removeItem('access_token')
+		setDataAuth({
+			isAuthenticated: false,
+			user: null,
+		})
+	}
 	const menuItems = [
 		{ to: '/', label: 'Tất cả', style: { backgroundColor: 'rgb(255, 196, 25)', color: 'rgb(255, 243, 209)', fontWeight: 'bold' } },
 		{ to: '/in-home', label: 'Tại nhà' },
@@ -51,9 +77,10 @@ function Header() {
 					</Link>
 				</Box>
 				<Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', height: '100%', ml: '30px' }}>
-					{menuItems.map((item) => {
+					{menuItems.map((item, index) => {
 						return (
 							<Link
+								key={index}
 								to={item.to}
 								style={{ display: 'flex', padding: '4px 6px', borderRadius: '20px', backgroundColor: item?.style?.backgroundColor || 'transparent' }}
 							>
@@ -82,7 +109,7 @@ function Header() {
 						}}
 					/>
 				</Box>
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', ml: '50px' }}>
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px', ml: '35px' }}>
 					<Link>
 						<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 							<img
@@ -95,12 +122,83 @@ function Header() {
 							<Typography sx={{ color: 'rgb(69, 195, 210)', fontSize: '14px', fontWeight: 'bold' }}>Lịch hẹn</Typography>
 						</Box>
 					</Link>
-					<Button
-						variant='outlined'
-						startIcon={<LoginIcon />}
-					>
-						Login
-					</Button>
+					<Link>
+						<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+							<img
+								src={images.help}
+								alt='lich hen'
+								width='26'
+								height='26'
+								loading='lazy'
+							/>
+							<Typography sx={{ color: 'rgb(69, 195, 210)', fontSize: '14px', fontWeight: 'bold' }}>Hỗ trợ</Typography>
+						</Box>
+					</Link>
+					{!dataAuth.isAuthenticated ? (
+						<Link to='/login'>
+							<Button
+								variant='outlined'
+								startIcon={<LoginIcon />}
+								sx={{
+									borderColor: 'rgb(69, 195, 210)',
+									'&:hover': {
+										borderColor: 'rgb(69, 195, 210)',
+									},
+									color: 'rgb(69, 195, 210)',
+									fontWeight: '500',
+								}}
+							>
+								Login
+							</Button>
+						</Link>
+					) : (
+						<Fragment>
+							<Tooltip title='Account settings'>
+								<IconButton
+									onClick={handleClick}
+									size='small'
+									aria-controls={open ? 'account-menu-setting' : undefined}
+									aria-haspopup='true'
+									aria-expanded={open ? 'true' : undefined}
+								>
+									<Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+								</IconButton>
+							</Tooltip>
+							<Menu
+								anchorEl={anchorEl}
+								id='account-menu-setting'
+								open={open}
+								onClose={handleClose}
+								onClick={handleClose}
+								transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+								anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+							>
+								<MenuItem onClick={handleClose}>
+									<Avatar sx={{ width: '30px', height: '30px', mr: 1 }} />
+									<Typography>{dataAuth.user?.fullname}</Typography>
+								</MenuItem>
+								<Divider />
+								<MenuItem onClick={handleClose}>
+									<ListItemIcon>
+										<PersonAdd fontSize='small' />
+									</ListItemIcon>
+									Add another account
+								</MenuItem>
+								<MenuItem onClick={handleClose}>
+									<ListItemIcon>
+										<Settings fontSize='small' />
+									</ListItemIcon>
+									Settings
+								</MenuItem>
+								<MenuItem onClick={handleLogout}>
+									<ListItemIcon>
+										<Logout fontSize='small' />
+									</ListItemIcon>
+									Logout
+								</MenuItem>
+							</Menu>
+						</Fragment>
+					)}
 				</Box>
 			</Box>
 		</Box>

@@ -8,10 +8,7 @@ function AuthWrapper({ children }) {
 	const [loading, setLoading] = useState(false)
 	const [dataAuth, setDataAuth] = useState({
 		isAuthenticated: false,
-		user: {
-			email: '',
-			roldId: '',
-		},
+		user: null,
 	})
 
 	const data = {

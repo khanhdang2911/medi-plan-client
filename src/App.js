@@ -14,11 +14,13 @@ function App() {
 			try {
 				setLoading(true)
 				const userData = await axios.get('/api/account')
-				setDataAuth({ isAuthenticated: true, user: userData })
+				setDataAuth({ isAuthenticated: true, user: userData.data })
 				setLoading(false)
 			} catch (error) {
+				setLoading(false)
 				return error
 			}
+			
 		}
 		getAccount()
 	}, [])

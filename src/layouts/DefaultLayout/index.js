@@ -14,7 +14,7 @@ function DefaultLayout({ children }) {
 	const { loading } = useContext(AuthContext)
 	return (
 		<div className={cx('wrapper')}>
-			{false ? (
+			{loading ? (
 				<Box sx={{ width: '100%' }}>
 					<LinearProgress />
 				</Box>
