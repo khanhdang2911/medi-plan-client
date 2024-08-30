@@ -20,10 +20,12 @@ function App() {
 				setLoading(false)
 				return error
 			}
-			
 		}
-		getAccount()
-	}, [])
+		const access_token = localStorage.getItem('access_token')
+		if (access_token && access_token !== 'null') {
+			getAccount()
+		}
+	}, [setDataAuth, setLoading])
 	return (
 		<Router>
 			<Routes>
