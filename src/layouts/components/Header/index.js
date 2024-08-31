@@ -33,6 +33,7 @@ function Header() {
 	}
 	const handleLogout = () => {
 		localStorage.removeItem('access_token')
+		localStorage.removeItem('refreshToken')
 		setDataAuth({
 			isAuthenticated: false,
 			user: null,
