@@ -24,6 +24,8 @@ function App() {
 		const access_token = localStorage.getItem('access_token')
 		if (access_token && access_token !== 'null') {
 			getAccount()
+		} else {
+			setDataAuth({ isAuthenticated: false, user: null })
 		}
 	}, [setDataAuth, setLoading])
 	return (
