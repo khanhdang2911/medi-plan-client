@@ -41,7 +41,7 @@ const AllUserPage = () => {
 					replace: true,
 					state: {
 						severity: 'error',
-						text: `${error.message}`,
+						text: `${error.message}, Unauthorization!!!`,
 					},
 				})
 			}
