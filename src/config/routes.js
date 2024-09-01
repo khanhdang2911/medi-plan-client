@@ -7,7 +7,8 @@ const routes = {
 	liveHealthy: '/live-healthy',
 	login: '/login',
 	register: '/register',
-	allUserPage:"/all-user-page"
+	allUserPage: '/all-user-page',
+	notFound: '*',
 }
 
 export default routes

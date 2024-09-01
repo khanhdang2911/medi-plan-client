@@ -48,14 +48,15 @@ function Login() {
 			if (authData) {
 				setDataAuth({
 					isAuthenticated: true,
-					user: authData,
+					user: authData.data,
 				})
 			}
 			navigate('/')
 		} catch (error) {
-			console.log(error)
-			if (error.response && error.response.status === 401) {
-				setErrorMessage(error.response.data.errMessage)
+			if (error.errMessage) {
+				setErrorMessage(error.errMessage)
+			} else {
+				setErrorMessage('Error when login from server!')
 			}
 		}
 	}
