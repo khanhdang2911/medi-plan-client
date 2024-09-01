@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import { Fragment, useContext, useState } from 'react'
 import { AuthContext } from '~/context/AuthContext'
 import images from '~/assets'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
@@ -40,7 +40,7 @@ function Header() {
 		})
 	}
 	const menuItems = [
-		{ to: '/', label: 'Tất cả', style: { backgroundColor: 'rgb(255, 196, 25)', color: 'rgb(255, 243, 209)', fontWeight: 'bold' } },
+		{ to: '/', label: 'Tất cả' },
 		{ to: '/in-home', label: 'Tại nhà' },
 		{ to: '/in-hospital', label: 'Tại viện' },
 		{ to: '/live-healthy', label: 'Sống khỏe' },
@@ -80,15 +80,28 @@ function Header() {
 				<Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', height: '100%', ml: '30px' }}>
 					{menuItems.map((item, index) => {
 						return (
-							<Link
+							<NavLink
 								key={index}
 								to={item.to}
-								style={{ display: 'flex', padding: '4px 6px', borderRadius: '20px', backgroundColor: item?.style?.backgroundColor || 'transparent' }}
+								style={({ isActive }) => ({
+									display: 'flex',
+									padding: '4px 6px',
+									borderRadius: '20px',
+									backgroundColor: isActive ? 'rgb(255, 196, 25)' : 'transparent',
+								})}
 							>
-								<Typography sx={{ color: item?.style?.color || 'rgb(17, 17, 17)', fontWeight: item?.style?.fontWeight || 'normal', fontSize: '1.2rem' }}>
-									{item.label}
-								</Typography>
-							</Link>
+								{({ isActive }) => (
+									<Typography
+										sx={{
+											color: isActive ? 'rgb(255, 243, 209)' : 'rgb(17, 17, 17)',
+											fontWeight: isActive ? 'bold' : 'normal',
+											fontSize: '1.2rem',
+										}}
+									>
+										{item.label}
+									</Typography>
+								)}
+							</NavLink>
 						)
 					})}
 					<TextField
