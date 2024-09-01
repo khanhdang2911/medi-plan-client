@@ -19,7 +19,6 @@ const refreshToken = async () => {
 		const tokenData = tokenRes.data
 		return tokenData.access_token
 	} catch (error) {
-		console.log(error)
 		return null
 	}
 }

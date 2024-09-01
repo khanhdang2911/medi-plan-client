@@ -39,7 +39,6 @@ function Register() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-
 		if (!validate()) {
 			if (!gender) {
 				setGenderError('Please choose your gender')
@@ -47,7 +46,7 @@ function Register() {
 			return
 		}
 		try {
-			await axios.post('/api/register', {
+			const dataFromResponse = await axios.post('/api/register', {
 				email: values.email,
 				password: values.password,
 				fullname: values.fullname,
@@ -55,7 +54,11 @@ function Register() {
 				phonenumber: values.phonenumber,
 				gender: gender === 'male' ? '1' : '0',
 			})
-			navigate('/login')
+			if (dataFromResponse.data?.errMessage) {
+				setErrorMessage(dataFromResponse.data.errMessage)
+			} else {
+				navigate('/login')
+			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {
 				setErrorMessage(error.response.data.errMessage)
@@ -174,7 +177,7 @@ function Register() {
 					<button
 						type='submit'
 						className={cx('btn-login')}
-						onClick={(e) => handleSubmit(e)}
+						onClick={handleSubmit}
 					>
 						Register
 					</button>

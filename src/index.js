@@ -11,12 +11,12 @@ import AuthWrapper from './context/AuthContext'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
 	<React.StrictMode>
-		<CssVarsProvider theme={theme}>
-			<CssBaseline />
-			<AuthWrapper>
+		<AuthWrapper>
+			<CssVarsProvider theme={theme}>
+				<CssBaseline />
 				<App />
-			</AuthWrapper>
-		</CssVarsProvider>
+			</CssVarsProvider>
+		</AuthWrapper>
 	</React.StrictMode>
 )
 

@@ -9,6 +9,7 @@ import routes from '~/config/routes'
 import DefaultLayout from '~/layouts/DefaultLayout'
 import Register from '~/pages/Auth/Register'
 import AllUsePage from '~/pages/AllUserPage'
+import NotFound from '~/pages/NotFound'
 
 const publicRoutes = [
 	{
@@ -31,6 +32,20 @@ const publicRoutes = [
 		component: LiveHealthy,
 		layout: DefaultLayout,
 	},
+
+	{
+		path: routes.allUserPage,
+		component: AllUsePage,
+		layout: null,
+	},
+	{
+		path: routes.notFound,
+		component: NotFound,
+		layout: null,
+	},
+]
+
+const privateRoutes = [
 	{
 		path: routes.login,
 		component: Login,
@@ -41,13 +56,6 @@ const publicRoutes = [
 		component: Register,
 		layout: null,
 	},
-	{
-		path: routes.allUserPage,
-		component: AllUsePage,
-		layout: null,
-	},
 ]
-
-const privateRoutes = []
 
 export { publicRoutes, privateRoutes }
