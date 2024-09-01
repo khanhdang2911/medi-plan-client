@@ -2,10 +2,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Fragment, useContext, useEffect } from 'react'
 
-import { publicRoutes } from './routes'
+import { privateRoutes, publicRoutes } from './routes'
 import DefaultLayout from './layouts/DefaultLayout'
 import axios from '~/utils/httpRequest'
 import { AuthContext } from './context/AuthContext'
+import Anonymous from './components/Anonymous'
 
 function App() {
 	const { setDataAuth, setLoading } = useContext(AuthContext)
@@ -50,6 +51,29 @@ function App() {
 						></Route>
 					)
 				})}
+				{
+					<Route element={<Anonymous />}>
+						{privateRoutes.map((route, index) => {
+							let Layout = DefaultLayout
+							const Page = route.component
+							if (route.layout) Layout = route.layout
+							else if (route.layout === null) {
+								Layout = Fragment
+							}
+							return (
+								<Route
+									key={index}
+									element={
+										<Layout>
+											<Page />
+										</Layout>
+									}
+									path={route.path}
+								></Route>
+							)
+						})}
+					</Route>
+				}
 			</Routes>
 		</Router>
 	)
