@@ -33,7 +33,7 @@ function Login() {
 		}
 
 		try {
-			const response = await axios.post('/api/login', {
+			const response = await axios.post('/users/login', {
 				email: values.email,
 				password: values.password,
 			})
@@ -44,7 +44,7 @@ function Login() {
 			if (data.refreshToken) {
 				localStorage.setItem('refreshToken', data.refreshToken)
 			}
-			const authData = await axios.get('/api/account')
+			const authData = await axios.get('/users/account')
 			if (authData) {
 				setDataAuth({
 					isAuthenticated: true,

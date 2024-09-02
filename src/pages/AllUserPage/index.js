@@ -29,7 +29,7 @@ const AllUserPage = () => {
 	useEffect(() => {
 		const fetchGetAllUser = async () => {
 			try {
-				const data = await axios.get('/api/get-all-user')
+				const data = await axios.get('/users/get-all-user')
 				setAllUserData(data.data.allUser)
 				setAlert({
 					severity: 'success',

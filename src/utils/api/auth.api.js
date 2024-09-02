@@ -5,7 +5,7 @@ import { refreshInstance as axios } from '../httpRequest'
 const refreshToken = async () => {
 	try {
 		const tokenRes = await axios.post(
-			'/api/refresh-token',
+			'/users/refresh-token',
 			{
 				refreshToken: localStorage.getItem('refreshToken'),
 			},

@@ -14,7 +14,7 @@ function App() {
 		const getAccount = async () => {
 			try {
 				setLoading(true)
-				const userData = await axios.get('/api/account')
+				const userData = await axios.get('/users/account')
 				setDataAuth({ isAuthenticated: true, user: userData.data })
 				setLoading(false)
 			} catch (error) {
