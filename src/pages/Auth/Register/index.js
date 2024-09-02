@@ -46,7 +46,7 @@ function Register() {
 			return
 		}
 		try {
-			const dataFromResponse = await axios.post('/api/register', {
+			const dataFromResponse = await axios.post('/users/register', {
 				email: values.email,
 				password: values.password,
 				fullname: values.fullname,
