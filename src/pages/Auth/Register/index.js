@@ -2,12 +2,12 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import axios from '~/utils/httpRequest'
 import classNames from 'classnames/bind'
 import styles from '../Login/Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
 import { useNavigate } from 'react-router-dom'
+import { registerUser } from '~/utils/api/auth.api'
 const cx = classNames.bind(styles)
 
 function Register() {
@@ -40,13 +40,14 @@ function Register() {
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 		if (!validate()) {
-			if (!gender) {
-				setGenderError('Please choose your gender')
-			}
+			return
+		}
+		if (!gender) {
+			setGenderError('Please choose your gender')
 			return
 		}
 		try {
-			const dataFromResponse = await axios.post('/users/register', {
+			const dataFromResponse = await registerUser({
 				email: values.email,
 				password: values.password,
 				fullname: values.fullname,
@@ -54,7 +55,7 @@ function Register() {
 				phonenumber: values.phonenumber,
 				gender: gender === 'male' ? '1' : '0',
 			})
-			if (dataFromResponse.data?.errMessage) {
+			if (dataFromResponse.data?.errMessage && dataFromResponse.data?.errCode !== 0) {
 				setErrorMessage(dataFromResponse.data.errMessage)
 			} else {
 				navigate('/login')

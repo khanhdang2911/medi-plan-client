@@ -3,13 +3,13 @@ import { useContext, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import axios from '~/utils/httpRequest'
 import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '~/context/AuthContext'
+import { getAccountInfo, loginUser } from '~/utils/api/auth.api'
 const cx = classNames.bind(styles)
 
 function Login() {
@@ -33,7 +33,7 @@ function Login() {
 		}
 
 		try {
-			const response = await axios.post('/users/login', {
+			const response = await loginUser({
 				email: values.email,
 				password: values.password,
 			})
@@ -44,7 +44,7 @@ function Login() {
 			if (data.refreshToken) {
 				localStorage.setItem('refreshToken', data.refreshToken)
 			}
-			const authData = await axios.get('/users/account')
+			const authData = await getAccountInfo()
 			if (authData) {
 				setDataAuth({
 					isAuthenticated: true,
