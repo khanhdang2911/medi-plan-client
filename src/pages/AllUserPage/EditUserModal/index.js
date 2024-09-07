@@ -7,8 +7,8 @@ import Fade from '@mui/material/Fade'
 import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useState } from 'react'
-import { getAllUser, registerUser } from '~/utils/api/auth.api'
+import { useEffect, useState } from 'react'
+import { updateUser } from '~/utils/api/auth.api'
 
 const style = {
 	position: 'absolute',
@@ -25,18 +25,27 @@ const style = {
 	gap: '15px',
 }
 
-export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser, setAllUserData, setAlert, setOpenAlert }) {
+export default function EditUserModal({ openModalEditUser, handleCloseModalEditUser, allUserData, setAllUserData, setAlert, setOpenAlert, userEdit }) {
 	const [error, setError] = useState('')
 	const [allValues, setAllValues] = useState({
 		email: '',
 		fullname: '',
-		password: '',
 		phonenumber: '',
 		address: '',
 		gender: '',
 	})
+	useEffect(() => {
+		// When open modal, set user data current to edit
+		setAllValues({
+			email: userEdit.email || '',
+			fullname: userEdit.fullname || '',
+			phonenumber: userEdit.phonenumber || '',
+			address: userEdit.address || '',
+			gender: userEdit.gender || '',
+		})
+	}, [userEdit])
 
-	const handleValidate = () => {
+	function handleValidate() {
 		const allValueArray = Object.entries(allValues)
 		for (let i = 0; i < allValueArray.length; i++) {
 			if (!allValueArray[i][1]) {
@@ -46,24 +55,37 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 		}
 		return true
 	}
-	const handleCreateUser = async () => {
+	const handleCancelEditUser = () => {
+		setAllValues({
+			email: '',
+			fullname: '',
+			phonenumber: '',
+			address: '',
+			gender: '',
+		})
+		setError('')
+		handleCloseModalEditUser()
+	}
+	const handleSaveChangesUser = async () => {
 		const check = handleValidate()
 		if (!check) return
-		//Call api
-		const response = await registerUser(allValues)
+		//api update user
+		const response = await updateUser({ ...allValues, id: userEdit.id })
 		if (response.data?.errCode !== 0 && response.data?.errMessage) {
 			setError(response.data?.errMessage)
 			return
 		}
-		//Create user successfully
-		handleCancelCreateUser()
-		//Call api get all user again
-		const responseFromAllUser = await getAllUser()
-		setAllUserData(responseFromAllUser.data?.allUser)
+		//Update user successfully
+		handleCancelEditUser()
+		//get all user again
+		const updateUsers = allUserData.map((user) => {
+			return user.id === userEdit.id ? response.data.user : user
+		})
+		setAllUserData(updateUsers)
 		//set Alert
 		setAlert({
 			severity: 'success',
-			text: 'Create user successfully!',
+			text: 'Update user successfully!',
 		})
 		setOpenAlert(true)
 	}
@@ -73,23 +95,11 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 		setAllValues((prev) => ({ ...prev, [name]: value }))
 	}
 
-	const handleCancelCreateUser = () => {
-		setAllValues({
-			email: '',
-			fullname: '',
-			password: '',
-			phonenumber: '',
-			address: '',
-			gender: '',
-		})
-		setError('')
-		handleCloseModalAddUser()
-	}
 	return (
 		<div>
 			<Modal
-				open={openModalAddUser}
-				onClose={handleCancelCreateUser}
+				open={openModalEditUser}
+				onClose={handleCancelEditUser}
 				aria-labelledby='modal-modal-title-add-user'
 				aria-describedby='modal-modal-description-add-user'
 				closeAfterTransition
@@ -100,32 +110,26 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 					},
 				}}
 			>
-				<Fade in={openModalAddUser}>
+				<Fade in={openModalEditUser}>
 					<Box sx={style}>
 						<Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>CREATE NEW USER</Typography>
 						<Typography sx={{ color: 'red' }}>{error}</Typography>
 						<TextField
 							id='outlined-basic-email'
 							label='Email'
+							value={allValues.email}
+							disabled
 							name='email'
 							variant='outlined'
 							size='small'
 							sx={{ width: '100%' }}
 							onChange={(e) => handleOnChangeValues(e)}
 						/>
-						<TextField
-							id='outlined-basic-password'
-							type='password'
-							label='Password'
-							name='password'
-							variant='outlined'
-							size='small'
-							onChange={(e) => handleOnChangeValues(e)}
-						/>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 							<TextField
 								id='outlined-basic-fullname'
 								label='Fullname'
+								value={allValues.fullname}
 								name='fullname'
 								variant='outlined'
 								size='small'
@@ -135,6 +139,7 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 							<TextField
 								id='outlined-basic-phonenumber'
 								label='Phone number'
+								value={allValues.phonenumber}
 								name='phonenumber'
 								variant='outlined'
 								size='small'
@@ -144,6 +149,7 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 						<TextField
 							id='outlined-basic-address'
 							label='Address'
+							value={allValues.address}
 							name='address'
 							variant='outlined'
 							size='small'
@@ -160,7 +166,7 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 									labelId='gender-simple-select-label'
 									id='gender-simple-select'
 									name='gender'
-									value={allValues.gender}
+									value={allValues.gender ? '1' : '0'}
 									label='Gender'
 									onChange={(e) => handleOnChangeValues(e)}
 								>
@@ -172,14 +178,14 @@ export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser
 						<Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
 							<Button
 								variant='contained'
-								onClick={handleCreateUser}
+								onClick={handleSaveChangesUser}
 								sx={{ fontWeight: '500' }}
 							>
-								Create
+								Save
 							</Button>
 							<Button
 								variant='contained'
-								onClick={handleCancelCreateUser}
+								onClick={handleCancelEditUser}
 								sx={{ bgcolor: '#ff7675', '&:hover': { bgcolor: '#ff7675' }, fontWeight: '500' }}
 							>
 								Cancel
