@@ -18,15 +18,17 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Typography from '@mui/material/Typography'
-import AddUserModal from '~/components/AddUserModal'
-import EditUserModal from '~/components/EditUserModal'
-import { deleteUser, getAllUser, getUserById } from '~/utils/api/auth.api'
+import AddUserModal from '~/pages/AllUserPage/AddUserModal'
+import EditUserModal from '~/pages/AllUserPage/EditUserModal'
+import DeleteUserModal from './DeleteUserModal'
+import { getAllUser } from '~/utils/api/auth.api'
 
 const AllUserPage = () => {
 	const [openAlert, setOpenAlert] = useState(false)
 	const [alert, setAlert] = useState({ severity: 'success', text: '' })
 	const [allUserData, setAllUserData] = useState([])
 	const [userEdit, setUserEdit] = useState({})
+	const [userDeleteId, setUserDeleteId] = useState()
 	const navigate = useNavigate()
 	//modal add user
 	const [openModalAddUser, setOpenModalAddUser] = useState(false)
@@ -37,13 +39,18 @@ const AllUserPage = () => {
 
 	//modal edit user
 	const [openModalEditUser, setOpenModalEditUser] = useState(false)
-	const handleOpenModalEditUser = async (id) => {
-		const response = await getUserById(id)
-		setUserEdit(response.data?.user)
+	const handleOpenModalEditUser = async (user) => {
+		setUserEdit(user)
 		setOpenModalEditUser(true)
 	}
 	const handleCloseModalEditUser = () => {
 		setOpenModalEditUser(false)
+	}
+	//modal delete user
+	const [openDeleteModal, setOpenDeleteModal] = useState(false)
+	const handleOpenDeleteModal = (id) => {
+		setUserDeleteId(id)
+		setOpenDeleteModal(true)
 	}
 
 	const handleCloseAlert = (event, reason) => {
@@ -53,33 +60,7 @@ const AllUserPage = () => {
 
 		setOpenAlert(false)
 	}
-	const handleDeleteUser = async (id) => {
-		try {
-			const response = await deleteUser(id)
-			if (response.data?.errCode !== 0 && response.data?.errMessage) {
-				setAlert({
-					severity: 'error',
-					text: response.data.errMessage,
-				})
-				setOpenAlert(true)
-			} else {
-				setAlert({
-					severity: 'success',
-					text: 'Delete user successfully',
-				})
-				setOpenAlert(true)
-			}
-			//Call api re-render all user page again
-			const dataFromGetAllUser = await getAllUser()
-			setAllUserData(dataFromGetAllUser.data?.allUser)
-		} catch (error) {
-			setAlert({
-				severity: 'error',
-				text: error.message,
-			})
-			setOpenAlert(true)
-		}
-	}
+
 	useEffect(() => {
 		const fetchGetAllUser = async () => {
 			try {
@@ -153,19 +134,23 @@ const AllUserPage = () => {
 										<TableCell>{row.fullname}</TableCell>
 										<TableCell>{row.phonenumber}</TableCell>
 										<TableCell>{row.address}</TableCell>
-										<TableCell sx={{ display: 'flex' }}>
-											<IconButton
-												onClick={() => {
-													handleOpenModalEditUser(row.id)
-												}}
-												children={<EditIcon />}
-												sx={{ color: '#f1c40f' }}
-											/>
-											<IconButton
-												onClick={() => handleDeleteUser(row.id)}
-												children={<DeleteIcon />}
-												sx={{ color: '#e74c3c' }}
-											/>
+										<TableCell>
+											<Box sx={{ display: 'flex' }}>
+												<IconButton
+													onClick={() => {
+														handleOpenModalEditUser(row)
+													}}
+													children={<EditIcon />}
+													sx={{ color: '#f1c40f' }}
+												/>
+												<IconButton
+													onClick={() => {
+														handleOpenDeleteModal(row.id)
+													}}
+													children={<DeleteIcon />}
+													sx={{ color: '#e74c3c' }}
+												/>
+											</Box>
 										</TableCell>
 									</TableRow>
 								))}
@@ -200,9 +185,18 @@ const AllUserPage = () => {
 				openModalEditUser={openModalEditUser}
 				handleCloseModalEditUser={handleCloseModalEditUser}
 				setAllUserData={setAllUserData}
+				allUserData={allUserData}
 				setAlert={setAlert}
 				setOpenAlert={setOpenAlert}
 				userEdit={userEdit}
+			/>
+			<DeleteUserModal
+				openDeleteModal={openDeleteModal}
+				setOpenDeleteModal={setOpenDeleteModal}
+				setAllUserData={setAllUserData}
+				setAlert={setAlert}
+				setOpenAlert={setOpenAlert}
+				userDeleteId={userDeleteId}
 			/>
 		</>
 	)

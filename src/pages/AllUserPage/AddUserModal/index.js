@@ -7,8 +7,8 @@ import Fade from '@mui/material/Fade'
 import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { getAllUser, updateUser } from '~/utils/api/auth.api'
+import { useState } from 'react'
+import { registerUser } from '~/utils/api/auth.api'
 
 const style = {
 	position: 'absolute',
@@ -25,29 +25,18 @@ const style = {
 	gap: '15px',
 }
 
-export default function EditUserModal({ openModalEditUser, handleCloseModalEditUser, setAllUserData, setAlert, setOpenAlert, userEdit }) {
+export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser, setAllUserData, setAlert, setOpenAlert }) {
 	const [error, setError] = useState('')
 	const [allValues, setAllValues] = useState({
 		email: '',
 		fullname: '',
+		password: '',
 		phonenumber: '',
 		address: '',
 		gender: '',
 	})
-	useEffect(() => {
-		// Khi mở modal, load dữ liệu của user hiện tại để chỉnh sửa
-		if (userEdit) {
-			setAllValues({
-				email: userEdit.email || '',
-				fullname: userEdit.fullname || '',
-				phonenumber: userEdit.phonenumber || '',
-				address: userEdit.address || '',
-				gender: userEdit.gender || '',
-			})
-		}
-	}, [userEdit])
 
-	function handleValidate() {
+	const handleValidate = () => {
 		const allValueArray = Object.entries(allValues)
 		for (let i = 0; i < allValueArray.length; i++) {
 			if (!allValueArray[i][1]) {
@@ -57,35 +46,23 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 		}
 		return true
 	}
-	const handleCancelEditUser = () => {
-		setAllValues({
-			email: '',
-			fullname: '',
-			phonenumber: '',
-			address: '',
-			gender: '',
-		})
-		setError('')
-		handleCloseModalEditUser()
-	}
-	const handleSaveChangesUser = async () => {
+	const handleCreateUser = async () => {
 		const check = handleValidate()
 		if (!check) return
-		//api update user
-		const response = await updateUser({ ...allValues, id: userEdit.id })
-    if (response.data?.errCode !== 0 && response.data?.errMessage) {
+		//Call api
+		const response = await registerUser(allValues)
+		if (response.data?.errCode !== 0 && response.data?.errMessage) {
 			setError(response.data?.errMessage)
 			return
 		}
-		//Update user successfully
-		handleCancelEditUser()
-		//Call api get all user again
-		const responseFromAllUser = await getAllUser()
-		setAllUserData(responseFromAllUser.data?.allUser)
+		//Create user successfully
+		handleCancelCreateUser()
+		//get all user again
+		setAllUserData((prev) => [...prev, response.data.user])
 		//set Alert
 		setAlert({
 			severity: 'success',
-			text: 'Update user successfully!',
+			text: 'Create user successfully!',
 		})
 		setOpenAlert(true)
 	}
@@ -95,11 +72,23 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 		setAllValues((prev) => ({ ...prev, [name]: value }))
 	}
 
+	const handleCancelCreateUser = () => {
+		setAllValues({
+			email: '',
+			fullname: '',
+			password: '',
+			phonenumber: '',
+			address: '',
+			gender: '',
+		})
+		setError('')
+		handleCloseModalAddUser()
+	}
 	return (
 		<div>
 			<Modal
-				open={openModalEditUser}
-				onClose={handleCancelEditUser}
+				open={openModalAddUser}
+				onClose={handleCancelCreateUser}
 				aria-labelledby='modal-modal-title-add-user'
 				aria-describedby='modal-modal-description-add-user'
 				closeAfterTransition
@@ -110,7 +99,7 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 					},
 				}}
 			>
-				<Fade in={openModalEditUser}>
+				<Fade in={openModalAddUser}>
 					<Box sx={style}>
 						<Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>CREATE NEW USER</Typography>
 						<Typography sx={{ color: 'red' }}>{error}</Typography>
@@ -122,6 +111,16 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 							variant='outlined'
 							size='small'
 							sx={{ width: '100%' }}
+							onChange={(e) => handleOnChangeValues(e)}
+						/>
+						<TextField
+							id='outlined-basic-password'
+							type='password'
+							value={allValues.password}
+							label='Password'
+							name='password'
+							variant='outlined'
+							size='small'
 							onChange={(e) => handleOnChangeValues(e)}
 						/>
 						<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -165,7 +164,7 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 									labelId='gender-simple-select-label'
 									id='gender-simple-select'
 									name='gender'
-									value={allValues.gender ? '1' : '0'}
+									value={allValues.gender}
 									label='Gender'
 									onChange={(e) => handleOnChangeValues(e)}
 								>
@@ -177,14 +176,14 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 						<Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
 							<Button
 								variant='contained'
-								onClick={handleSaveChangesUser}
+								onClick={handleCreateUser}
 								sx={{ fontWeight: '500' }}
 							>
-								Save
+								Create
 							</Button>
 							<Button
 								variant='contained'
-								onClick={handleCancelEditUser}
+								onClick={handleCancelCreateUser}
 								sx={{ bgcolor: '#ff7675', '&:hover': { bgcolor: '#ff7675' }, fontWeight: '500' }}
 							>
 								Cancel
