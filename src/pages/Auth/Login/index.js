@@ -1,5 +1,6 @@
 /** @format */
-import { useContext, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -7,16 +8,15 @@ import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
-import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '~/context/AuthContext'
-import { getAccountInfo, loginUser } from '~/utils/api/auth.api'
+import { loginUser } from '~/utils/api/auth.api'
+import authSlice from '~/redux/authSlice'
+import { store } from '~/redux/stote'
 const cx = classNames.bind(styles)
 
 function Login() {
 	const navigate = useNavigate()
 	const [showPassword, setShowPassword] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
-	const { setDataAuth } = useContext(AuthContext)
 	const { values, errors, handleOnChangeInfo, validate } = useForm({
 		email: '',
 		password: '',
@@ -33,31 +33,19 @@ function Login() {
 		}
 
 		try {
+			store.dispatch(authSlice.actions.isfetchingData())
 			const response = await loginUser({
 				email: values.email,
 				password: values.password,
 			})
 			const data = response.data
-			if (data.access_token) {
-				localStorage.setItem('access_token', data.access_token)
+			if (data.user) {
+				store.dispatch(authSlice.actions.login(data.user))
 			}
-			if (data.refreshToken) {
-				localStorage.setItem('refreshToken', data.refreshToken)
-			}
-			const authData = await getAccountInfo()
-			if (authData) {
-				setDataAuth({
-					isAuthenticated: true,
-					user: authData.data,
-				})
-			}
+			store.dispatch(authSlice.actions.fetchingDataSuccess())
 			navigate('/')
 		} catch (error) {
-			if (error.errMessage) {
-				setErrorMessage(error.errMessage)
-			} else {
-				setErrorMessage('Error when login from server!')
-			}
+			setErrorMessage('Error when login from server!')
 		}
 	}
 	return (

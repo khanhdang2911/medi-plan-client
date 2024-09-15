@@ -7,16 +7,24 @@ import reportWebVitals from './reportWebVitals'
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import theme from './theme'
-import AuthWrapper from './context/AuthContext'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, store } from './redux/stote'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
 	<React.StrictMode>
-		<AuthWrapper>
-			<CssVarsProvider theme={theme}>
-				<CssBaseline />
-				<App />
-			</CssVarsProvider>
-		</AuthWrapper>
+		<Provider store={store}>
+			<PersistGate
+				loading={null}
+				persistor={persistor}
+			>
+				{' '}
+				<CssVarsProvider theme={theme}>
+					<CssBaseline />
+					<App />
+				</CssVarsProvider>
+			</PersistGate>
+		</Provider>
 	</React.StrictMode>
 )
 

@@ -2,39 +2,44 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { refreshToken } from './api/auth.api'
+import authSlice from '~/redux/authSlice'
+import { store } from '~/redux/stote'
 // Set config defaults when creating the instance
 const instance = axios.create({
 	baseURL: process.env.REACT_APP_BACKEND_API_URL,
+	withCredentials: true,
 })
 
 const refreshInstance = axios.create({
 	baseURL: process.env.REACT_APP_BACKEND_API_URL,
+	withCredentials: true,
 })
 
+const handleRefreshToken = async (config) => {
+	const auth = store.getState().auth
+	let accessToken = auth.user?.accessToken
+	config.headers['Authorization'] = 'Bearer ' + accessToken
+	if (accessToken) {
+		try {
+			const decodedToken = jwtDecode(accessToken)
+			const currentTime = Date.now() / 1000
+			if (currentTime - decodedToken.exp > 200) {
+				const dataToken = await refreshToken()
+				if (dataToken) {
+					store.dispatch(authSlice.actions.setAccessTokenFromRefreshToken(dataToken))
+					config.headers['Authorization'] = 'Bearer ' + dataToken
+				}
+			}
+		} catch (error) {
+			return Promise.reject(error)
+		}
+	}
+	return config
+}
 // Add a request interceptor
 instance.interceptors.request.use(
 	async function (config) {
-		let access_token = localStorage.getItem('access_token')
-		config.headers['Authorization'] = 'Bearer ' + access_token
-		if (access_token === 'null') {
-			access_token = null
-		}
-		if (access_token) {
-			try {
-				const decodedToken = jwtDecode(access_token)
-				const currentTime = Date.now() / 1000
-				if (decodedToken.exp - currentTime < 200) {
-					const dataToken = await refreshToken()
-					if (dataToken) {
-						localStorage.setItem('access_token', dataToken)
-						config.headers['Authorization'] = 'Bearer ' + dataToken
-					}
-				}
-			} catch (error) {
-				return Promise.reject(error)
-			}
-		}
-		return config
+		return await handleRefreshToken(config)
 	},
 	function (error) {
 		// Do something with request error

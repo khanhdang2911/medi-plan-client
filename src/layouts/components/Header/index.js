@@ -1,7 +1,6 @@
 /** @format */
 import Box from '@mui/material/Box'
-import { Fragment, useContext, useState } from 'react'
-import { AuthContext } from '~/context/AuthContext'
+import { Fragment, useState } from 'react'
 import images from '~/assets'
 import { Link, NavLink } from 'react-router-dom'
 import Button from '@mui/material/Button'
@@ -20,9 +19,12 @@ import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
-
+import { store } from '~/redux/stote'
+import { logOutUser } from '~/utils/api/auth.api'
+import authSlice from '~/redux/authSlice'
 function Header() {
-	const { dataAuth, setDataAuth } = useContext(AuthContext)
+	const [isAuthenticated, setIsAuthenticated] = useState(store.getState().auth.isAuthenticated)
+	const user = store.getState().auth.user
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
 	const handleClick = (event) => {
@@ -31,13 +33,14 @@ function Header() {
 	const handleClose = () => {
 		setAnchorEl(null)
 	}
-	const handleLogout = () => {
-		localStorage.removeItem('access_token')
-		localStorage.removeItem('refreshToken')
-		setDataAuth({
-			isAuthenticated: false,
-			user: null,
-		})
+	const handleLogout = async () => {
+		try {
+			const response = await logOutUser()
+			if (response.status === 200) {
+				store.dispatch(authSlice.actions.logout())
+				setIsAuthenticated(false)
+			}
+		} catch (error) {}
 	}
 	const menuItems = [
 		{ to: '/', label: 'Tất cả' },
@@ -77,7 +80,7 @@ function Header() {
 						/>
 					</Link>
 				</Box>
-				<Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', height: '100%', ml: '30px' }}>
+				<Box sx={{ display: 'flex', gap: '20px', alignItems: 'center', height: '100%', ml: '10px', pl: 1, pr: 1 }}>
 					{menuItems.map((item, index) => {
 						return (
 							<NavLink
@@ -123,7 +126,7 @@ function Header() {
 						}}
 					/>
 				</Box>
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px', ml: '35px' }}>
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: '15px', ml: '20px' }}>
 					<Link>
 						<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 							<img
@@ -148,7 +151,7 @@ function Header() {
 							<Typography sx={{ color: 'rgb(69, 195, 210)', fontSize: '14px', fontWeight: 'bold' }}>Hỗ trợ</Typography>
 						</Box>
 					</Link>
-					{!dataAuth.isAuthenticated ? (
+					{!isAuthenticated ? (
 						<Link to='/login'>
 							<Button
 								variant='outlined'
@@ -189,7 +192,7 @@ function Header() {
 							>
 								<MenuItem onClick={handleClose}>
 									<Avatar sx={{ width: '30px', height: '30px', mr: 1 }} />
-									<Typography>{dataAuth.user?.fullname}</Typography>
+									<Typography>{user.fullname}</Typography>
 								</MenuItem>
 								<Divider />
 								<MenuItem onClick={handleClose}>

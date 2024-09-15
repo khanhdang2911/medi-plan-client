@@ -61,7 +61,10 @@ function ManyItem(props) {
 		<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 			{props.manyItems.map((item, i) => {
 				return (
-					<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', border: '1px solid #c8d6e5', borderRadius: '10px' }}>
+					<Box
+						key={i}
+						sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', border: '1px solid #c8d6e5', borderRadius: '10px' }}
+					>
 						<img
 							src={item.image}
 							alt='khamtuxa'

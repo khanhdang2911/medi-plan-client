@@ -2,22 +2,22 @@
 
 import { refreshInstance as axiosRefresh } from '../httpRequest'
 import axios from '../httpRequest'
+import { store } from '~/redux/stote'
 const refreshToken = async () => {
 	try {
 		const tokenRes = await axiosRefresh.post(
 			'/users/refresh-token',
+			{},
 			{
-				refreshToken: localStorage.getItem('refreshToken'),
-			},
-			{
+				withCredentials: true,
 				headers: {
-					Authorization: localStorage.getItem('access_token'),
 					'Content-Type': 'application/json',
+					Authorization: 'Bearer ' + store.getState().auth.user?.accessToken,
 				},
 			}
 		)
 		const tokenData = tokenRes.data
-		return tokenData.access_token
+		return tokenData.accessToken
 	} catch (error) {
 		return null
 	}
@@ -31,12 +31,10 @@ const loginUser = async (data) => {
 	const response = await axios.post('/users/login', data)
 	return response
 }
-
-const getAccountInfo = async () => {
-	const authData = await axios.get('/users/account')
-	return authData
+const logOutUser = async () => {
+	const response = await axios.get('/users/logout')
+	return response
 }
-
 const getAllUser = async () => {
 	const data = await axios.get('/users/get-all-user')
 	return data
@@ -60,4 +58,4 @@ const updateUser = async (data) => {
 	const response = await axios.put('/users/update-user', data)
 	return response
 }
-export { refreshToken, registerUser, loginUser, getAccountInfo, getAllUser, deleteUser, getUserById, updateUser }
+export { refreshToken, registerUser, loginUser, logOutUser, getAllUser, deleteUser, getUserById, updateUser }

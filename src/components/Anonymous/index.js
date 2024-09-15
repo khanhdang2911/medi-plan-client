@@ -1,17 +1,10 @@
 /** @format */
 
-import { useContext } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
-import { AuthContext } from '~/context/AuthContext'
+import { store } from '~/redux/stote'
 const Anonymous = () => {
-	const { dataAuth } = useContext(AuthContext)
-	if (dataAuth.isAuthenticated) {
-		return (
-			<Navigate
-				to='/'
-				replace
-			/>
-		)
+	if (store.getState().auth.isAuthenticated) {
+		return <Navigate to="/" />
 	}
 	return <Outlet />
 }
