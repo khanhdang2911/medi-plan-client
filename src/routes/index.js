@@ -10,6 +10,7 @@ import DefaultLayout from '~/layouts/DefaultLayout'
 import Register from '~/pages/Auth/Register'
 import AllUsePage from '~/pages/AllUserPage'
 import NotFound from '~/pages/NotFound'
+import Account from '~/pages/Account'
 
 const publicRoutes = [
 	{
@@ -30,6 +31,11 @@ const publicRoutes = [
 	{
 		path: routes.liveHealthy,
 		component: LiveHealthy,
+		layout: DefaultLayout,
+	},
+	{
+		path: routes.account,
+		component: Account,
 		layout: DefaultLayout,
 	},
 

@@ -35,11 +35,9 @@ function Header() {
 	}
 	const handleLogout = async () => {
 		try {
-			const response = await logOutUser()
-			if (response.status === 200) {
-				store.dispatch(authSlice.actions.logout())
-				setIsAuthenticated(false)
-			}
+			store.dispatch(authSlice.actions.logout())
+			setIsAuthenticated(false)
+			await logOutUser()
 		} catch (error) {}
 	}
 	const menuItems = [
