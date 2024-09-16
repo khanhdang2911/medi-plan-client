@@ -1,9 +1,16 @@
 /** @format */
 
+import authSlice from '~/redux/authSlice'
 import { refreshInstance as axiosRefresh } from '../httpRequest'
 import axios from '../httpRequest'
 import { store } from '~/redux/stote'
 const refreshToken = async () => {
+	//if cookies is not have refresh token, return null
+	if (document.cookie.indexOf('refreshToken') === -1) {
+		//dispatch logout
+		store.dispatch(authSlice.actions.logout())
+		return null
+	}
 	try {
 		const tokenRes = await axiosRefresh.post(
 			'/users/refresh-token',

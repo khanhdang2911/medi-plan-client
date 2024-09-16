@@ -8,6 +8,7 @@ const routes = {
 	login: '/login',
 	register: '/register',
 	allUserPage: '/all-user-page',
+	account: '/account/*',
 	notFound: '*',
 }
 

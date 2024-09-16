@@ -5,6 +5,7 @@ const theme = extendTheme({
 	booking_care: {
 		HEADER_HEIGHT: '78px',
 		WIDTH_COMMON: '1208px',
+		BG_COLOR: 'rgb(146 215 239)',
 	},
 	components: {
 		MuiCssBaseline: {
