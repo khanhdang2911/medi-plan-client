@@ -41,9 +41,12 @@ function Login() {
 			const data = response.data
 			if (data.user) {
 				store.dispatch(authSlice.actions.login(data.user))
+				navigate('/')
+			}
+			else {
+				setErrorMessage(data.message)
 			}
 			store.dispatch(authSlice.actions.fetchingDataSuccess())
-			navigate('/')
 		} catch (error) {
 			setErrorMessage('Error when login from server!')
 		}

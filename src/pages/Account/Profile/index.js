@@ -103,7 +103,7 @@ function Profile() {
 		}
 	}
 	return (
-		<Box sx={{ padding: '20px', boxShadow: '2px 2px 4px 2px rgba(0,0,0,0.1)' }}>
+		<>
 			<Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem', opacity: 0.9 }}>Thông tin cá nhân</Typography>
 			<Box sx={{ mt: '20px', display: 'flex', gap: 2 }}>
 				<Box>
@@ -228,7 +228,7 @@ function Profile() {
 					{alert.text}
 				</Alert>
 			</Snackbar>
-		</Box>
+		</>
 	)
 }
 
