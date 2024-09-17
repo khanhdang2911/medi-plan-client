@@ -29,6 +29,11 @@ const handleRefreshToken = async (config) => {
 					store.dispatch(authSlice.actions.setAccessTokenFromRefreshToken(dataToken))
 					config.headers['Authorization'] = 'Bearer ' + dataToken
 				}
+				//log out if refresh token is not found/not valid
+				else {
+					store.dispatch(authSlice.actions.logout())
+					await instance.get('/users/logout')
+				}
 			}
 		} catch (error) {
 			return Promise.reject(error)

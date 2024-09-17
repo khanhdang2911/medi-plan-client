@@ -71,8 +71,8 @@ export default function EditUserModal({ openModalEditUser, handleCloseModalEditU
 		if (!check) return
 		//api update user
 		const response = await updateUser({ ...allValues, id: userEdit.id })
-		if (response.data?.errCode !== 0 && response.data?.errMessage) {
-			setError(response.data?.errMessage)
+		if (response.data?.success === false) {
+			setError(response.data?.message)
 			return
 		}
 		//Update user successfully

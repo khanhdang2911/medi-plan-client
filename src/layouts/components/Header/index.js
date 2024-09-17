@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box'
 import { Fragment, useState } from 'react'
 import images from '~/assets'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
@@ -17,12 +17,13 @@ import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
-import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { store } from '~/redux/stote'
 import { logOutUser } from '~/utils/api/auth.api'
 import authSlice from '~/redux/authSlice'
 function Header() {
+	const navigate = useNavigate()
 	const [isAuthenticated, setIsAuthenticated] = useState(store.getState().auth.isAuthenticated)
 	const user = store.getState().auth.user
 	const [anchorEl, setAnchorEl] = useState(null)
@@ -38,6 +39,7 @@ function Header() {
 			store.dispatch(authSlice.actions.logout())
 			setIsAuthenticated(false)
 			await logOutUser()
+			navigate('/')
 		} catch (error) {}
 	}
 	const menuItems = [
@@ -199,12 +201,17 @@ function Header() {
 									</ListItemIcon>
 									Add another account
 								</MenuItem>
-								<MenuItem onClick={handleClose}>
-									<ListItemIcon>
-										<Settings fontSize='small' />
-									</ListItemIcon>
-									Settings
-								</MenuItem>
+								<Link to='/account'>
+									<MenuItem
+										onClick={handleClose}
+										sx={{ color: 'black' }}
+									>
+										<ListItemIcon>
+											<AccountCircleIcon fontSize='small' />
+										</ListItemIcon>
+										Profile
+									</MenuItem>
+								</Link>
 								<MenuItem onClick={handleLogout}>
 									<ListItemIcon>
 										<Logout fontSize='small' />

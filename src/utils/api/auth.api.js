@@ -1,16 +1,9 @@
 /** @format */
 
-import authSlice from '~/redux/authSlice'
 import { refreshInstance as axiosRefresh } from '../httpRequest'
 import axios from '../httpRequest'
 import { store } from '~/redux/stote'
 const refreshToken = async () => {
-	//if cookies is not have refresh token, return null
-	if (document.cookie.indexOf('refreshToken') === -1) {
-		//dispatch logout
-		store.dispatch(authSlice.actions.logout())
-		return null
-	}
 	try {
 		const tokenRes = await axiosRefresh.post(
 			'/users/refresh-token',
@@ -30,12 +23,12 @@ const refreshToken = async () => {
 	}
 }
 const registerUser = async (data) => {
-	const response = await axios.post('/users/register', data)
+	const response = await axiosRefresh.post('/users/register', data)
 	return response
 }
 
 const loginUser = async (data) => {
-	const response = await axios.post('/users/login', data)
+	const response = await axiosRefresh.post('/users/login', data)
 	return response
 }
 const logOutUser = async () => {
@@ -60,9 +53,14 @@ const getUserById = async (id) => {
 	})
 	return data
 }
+//get account by refresh token
+const getAccount = async () => {
+	const data = await axios.get('/users/get-account')
+	return data
+}
 
 const updateUser = async (data) => {
 	const response = await axios.put('/users/update-user', data)
 	return response
 }
-export { refreshToken, registerUser, loginUser, logOutUser, getAllUser, deleteUser, getUserById, updateUser }
+export { refreshToken, registerUser, loginUser, logOutUser, getAllUser, deleteUser, getAccount, getUserById, updateUser }
