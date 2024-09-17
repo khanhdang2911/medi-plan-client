@@ -63,4 +63,9 @@ const updateUser = async (data) => {
 	const response = await axios.put('/users/update-user', data)
 	return response
 }
-export { refreshToken, registerUser, loginUser, logOutUser, getAllUser, deleteUser, getAccount, getUserById, updateUser }
+
+const changePassword = async (data) => {
+	const response = await axios.put('/users/change-password', data)
+	return response
+}
+export { refreshToken, registerUser, loginUser, logOutUser, getAllUser, deleteUser, getAccount, getUserById, updateUser, changePassword }

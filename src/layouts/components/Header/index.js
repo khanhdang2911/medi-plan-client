@@ -36,9 +36,9 @@ function Header() {
 	}
 	const handleLogout = async () => {
 		try {
+			await logOutUser()
 			store.dispatch(authSlice.actions.logout())
 			setIsAuthenticated(false)
-			await logOutUser()
 			navigate('/')
 		} catch (error) {}
 	}

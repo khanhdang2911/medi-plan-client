@@ -33,17 +33,7 @@ const publicRoutes = [
 		component: LiveHealthy,
 		layout: DefaultLayout,
 	},
-	{
-		path: routes.account,
-		component: Account,
-		layout: DefaultLayout,
-	},
 
-	{
-		path: routes.allUserPage,
-		component: AllUsePage,
-		layout: null,
-	},
 	{
 		path: routes.notFound,
 		component: NotFound,
@@ -64,4 +54,17 @@ const privateRoutes = [
 	},
 ]
 
-export { publicRoutes, privateRoutes }
+const authRoutes = [
+	{
+		path: routes.account,
+		component: Account,
+		layout: DefaultLayout,
+	},
+
+	{
+		path: routes.allUserPage,
+		component: AllUsePage,
+		layout: null,
+	},
+]
+export { publicRoutes, privateRoutes, authRoutes }

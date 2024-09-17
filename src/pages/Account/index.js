@@ -73,17 +73,19 @@ function Account() {
 				</Box>
 				{/* Infomation */}
 				<Box sx={{ width: '70%' }}>
-					{/* Routes to profile, change-password */}
-					<Routes>
-						<Route
-							index
-							element={<Profile />}
-						/>
-						<Route
-							path='change-password'
-							element={<ChangePasword />}
-						/>
-					</Routes>
+					<Box sx={{ padding: '20px', boxShadow: '2px 2px 4px 2px rgba(0,0,0,0.1)' }}>
+						{/* Routes to profile, change-password */}
+						<Routes>
+							<Route
+								index
+								element={<Profile />}
+							/>
+							<Route
+								path='change-password'
+								element={<ChangePasword />}
+							/>
+						</Routes>
+					</Box>
 				</Box>
 			</Box>
 		</Box>
