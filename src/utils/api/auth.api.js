@@ -60,7 +60,11 @@ const getAccount = async () => {
 }
 
 const updateUser = async (data) => {
-	const response = await axios.put('/users/update-user', data)
+	const response = await axios.put('/users/update-user', data, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	})
 	return response
 }
 
