@@ -178,7 +178,7 @@ function Header() {
 									aria-haspopup='true'
 									aria-expanded={open ? 'true' : undefined}
 								>
-									<Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+									{user.image ? <Avatar src={user.image} /> : <Avatar sx={{ width: 32, height: 32 }}>{user.fullname[0]}</Avatar>}
 								</IconButton>
 							</Tooltip>
 							<Menu
@@ -191,7 +191,10 @@ function Header() {
 								anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 							>
 								<MenuItem onClick={handleClose}>
-									<Avatar sx={{ width: '30px', height: '30px', mr: 1 }} />
+									<Avatar
+										sx={{ width: '30px', height: '30px', mr: 1 }}
+										src={user.image ? user.image : ''}
+									/>
 									<Typography>{user.fullname}</Typography>
 								</MenuItem>
 								<Divider />

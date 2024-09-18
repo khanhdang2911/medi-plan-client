@@ -13,17 +13,16 @@ import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled'
 import WcIcon from '@mui/icons-material/Wc'
 import { getAccount, updateUser } from '~/utils/api/auth.api'
 import { useNavigate } from 'react-router-dom'
+import { store } from '~/redux/stote'
+import authSlice from '~/redux/authSlice'
 function Profile() {
+	const user = store.getState().auth.user
 	const navigate = useNavigate()
+	const [imageFile, setImageFile] = useState(null)
+	const [imageURL, setImageURL] = useState('')
+	const [error, setError] = useState('')
 	const [alert, setAlert] = useState({ severity: 'success', text: '' })
 	const [openAlert, setOpenAlert] = useState(false)
-	const handleCloseAlert = (event, reason) => {
-		if (reason === 'clickaway') {
-			return
-		}
-
-		setOpenAlert(false)
-	}
 	const [allValues, setAllValues] = useState({
 		id: '',
 		fullname: '',
@@ -31,7 +30,23 @@ function Profile() {
 		address: '',
 		phonenumber: '',
 		gender: '0',
+		image: '',
 	})
+	const handleCloseAlert = (event, reason) => {
+		if (reason === 'clickaway') {
+			return
+		}
+
+		setOpenAlert(false)
+	}
+	//delete image when change to another image
+	useEffect(() => {
+		return () => {
+			if (imageURL) {
+				URL.revokeObjectURL(imageURL)
+			}
+		}
+	}, [imageURL])
 	useEffect(() => {
 		//get account by refresh token
 		const getAccountInfo = async () => {
@@ -46,6 +61,7 @@ function Profile() {
 						address: data.user.address,
 						phonenumber: data.user.phonenumber,
 						gender: data.user.gender ? '1' : '0',
+						image: data.user.image,
 					})
 				} else {
 					navigate('/')
@@ -56,10 +72,21 @@ function Profile() {
 		}
 		getAccountInfo()
 	}, [navigate])
-	const [error, setError] = useState('')
 	const handleChangeInfo = (e) => {
 		const { name, value } = e.target
 		setAllValues({ ...allValues, [name]: value })
+	}
+	const handleChangeAvatar = async (e) => {
+		const imageFile = e.target.files[0]
+		if (imageFile.type.split('/')[0] !== 'image') {
+			setError('File không đúng định dạng ảnh')
+			return
+		}
+		if (imageFile) {
+			const newImageURL = URL.createObjectURL(imageFile)
+			setImageURL(newImageURL)
+			setImageFile(imageFile)
+		}
 	}
 	const handleUpdateInfo = async () => {
 		if (!allValues.fullname) {
@@ -83,7 +110,15 @@ function Profile() {
 		}
 		//update info
 		try {
-			const response = await updateUser(allValues)
+			const formData = new FormData()
+			formData.append('id', allValues.id)
+			formData.append('fullname', allValues.fullname)
+			formData.append('email', allValues.email)
+			formData.append('address', allValues.address)
+			formData.append('phonenumber', allValues.phonenumber)
+			formData.append('gender', allValues.gender)
+			formData.append('image', imageFile)
+			const response = await updateUser(formData)
 			const data = response.data
 			if (data.success === true) {
 				setAllValues({
@@ -93,9 +128,11 @@ function Profile() {
 					address: data.user?.address,
 					phonenumber: data.user?.phonenumber,
 					gender: data.user?.gender ? '1' : '0',
+					image: data.user?.image,
 				})
 				setAlert({ severity: 'success', text: 'Cập nhật thông tin thành công' })
 				setOpenAlert(true)
+				store.dispatch(authSlice.actions.updateUser(data.user))
 			}
 		} catch (error) {
 			setAlert({ severity: 'error', text: 'Cập nhật thông tin thất bại' })
@@ -110,7 +147,7 @@ function Profile() {
 					<Avatar
 						sx={{ width: '150px', height: '150px' }}
 						alt='Remy Sharp'
-						src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-VdyLAqNM556TQxDHAzDUDuYgtTfgWubcGg&s'
+						src={imageURL || allValues.image || user.fullname[0]}
 					/>
 					<Button
 						variant='contained'
@@ -119,6 +156,7 @@ function Profile() {
 					>
 						Thay ảnh đại diện
 						<input
+							onChange={handleChangeAvatar}
 							type='file'
 							hidden
 						/>

@@ -26,6 +26,12 @@ const authSlice = createSlice({
 		setAccessTokenFromRefreshToken: (state, action) => {
 			state.user.accessToken = action.payload
 		},
+		updateUser: (state, action) => { 
+			const { fullname, email, image } = action.payload
+			state.user.fullname = fullname
+			state.user.email = email
+			state.user.image = image
+		}
 	},
 })
 
