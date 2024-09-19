@@ -1,7 +1,12 @@
 /** @format */
 
 import { useState, useEffect } from 'react'
-import { Alert, Avatar, Button, Snackbar, TextField, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import Snackbar from '@mui/material/Snackbar'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import PersonIcon from '@mui/icons-material/Person'
 import MenuItem from '@mui/material/MenuItem'
@@ -13,10 +18,12 @@ import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled'
 import WcIcon from '@mui/icons-material/Wc'
 import { getAccount, updateUser } from '~/utils/api/auth.api'
 import { useNavigate } from 'react-router-dom'
-import { store } from '~/redux/stote'
 import authSlice from '~/redux/authSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { getAuthSelector } from '~/redux/selectors'
 function Profile() {
-	const user = store.getState().auth.user
+	const auth = useSelector(getAuthSelector)
+	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [imageFile, setImageFile] = useState(null)
 	const [imageURL, setImageURL] = useState('')
@@ -82,19 +89,26 @@ function Profile() {
 			setError('File không đúng định dạng ảnh')
 			return
 		}
+		if (imageFile.type !== 'image/jpeg' && imageFile.type !== 'image/png' && imageFile.type !== 'image/jpg') {
+			setError('Chỉ được up ảnh dưới dạng jpg, jpeg, png')
+			return
+		}
 		if (imageFile) {
 			const newImageURL = URL.createObjectURL(imageFile)
 			setImageURL(newImageURL)
 			setImageFile(imageFile)
 		}
 	}
-	const handleUpdateInfo = async () => {
+	const handleValidate = () => {
 		if (!allValues.fullname) {
 			setError('Bạn chưa nhập họ tên')
+			return false
 		} else if (!allValues.address) {
 			setError('Bạn chưa nhập địa chỉ')
+			return false
 		} else if (!allValues.phonenumber) {
 			setError('Bạn chưa nhập số điện thoại')
+			return false
 		} else {
 			setError('')
 		}
@@ -102,12 +116,18 @@ function Profile() {
 		for (let i = 0; i < allValues.phonenumber.length; i++) {
 			if (isNaN(allValues.phonenumber[i])) {
 				setError('Phone number must be number')
-				break
+				return false
 			}
 		}
 		if (allValues.phonenumber.length !== 10) {
 			setError('Phone number must be 10 digits')
+			return false
 		}
+		return true
+	}
+	const handleUpdateInfo = async () => {
+		const checkValidate = handleValidate()
+		if (checkValidate === false) return
 		//update info
 		try {
 			const formData = new FormData()
@@ -132,7 +152,7 @@ function Profile() {
 				})
 				setAlert({ severity: 'success', text: 'Cập nhật thông tin thành công' })
 				setOpenAlert(true)
-				store.dispatch(authSlice.actions.updateUser(data.user))
+				dispatch(authSlice.actions.updateUser(data.user))
 			}
 		} catch (error) {
 			setAlert({ severity: 'error', text: 'Cập nhật thông tin thất bại' })
@@ -144,11 +164,20 @@ function Profile() {
 			<Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem', opacity: 0.9 }}>Thông tin cá nhân</Typography>
 			<Box sx={{ mt: '20px', display: 'flex', gap: 2 }}>
 				<Box>
-					<Avatar
-						sx={{ width: '150px', height: '150px' }}
-						alt='Remy Sharp'
-						src={imageURL || allValues.image || user.fullname[0]}
-					/>
+					{imageURL || allValues.image ? (
+						<Avatar
+							sx={{ width: '150px', height: '150px' }}
+							alt='Avatar'
+							src={imageURL || allValues.image}
+						/>
+					) : (
+						<Avatar
+							sx={{ width: '150px', height: '150px' }}
+							alt='Avatar'
+						>
+							{auth.user?.fullname[0]}
+						</Avatar>
+					)}
 					<Button
 						variant='contained'
 						component='label'
@@ -158,6 +187,7 @@ function Profile() {
 						<input
 							onChange={handleChangeAvatar}
 							type='file'
+							accept='image/*'
 							hidden
 						/>
 					</Button>

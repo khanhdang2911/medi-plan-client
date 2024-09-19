@@ -1,9 +1,11 @@
 /** @format */
 
 import { Navigate, Outlet } from 'react-router-dom'
-import { store } from '~/redux/stote'
+import { useSelector } from 'react-redux'
+import { getAuthSelector } from '~/redux/selectors'
 const AuthenticatedPage = () => {
-	if (!store.getState().auth.isAuthenticated) {
+	const auth = useSelector(getAuthSelector)
+	if (!auth.isAuthenticated) {
 		return <Navigate to='/login' />
 	}
 	return <Outlet />

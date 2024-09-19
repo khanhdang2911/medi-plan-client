@@ -10,11 +10,12 @@ import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
 import { loginUser } from '~/utils/api/auth.api'
 import authSlice from '~/redux/authSlice'
-import { store } from '~/redux/stote'
+import { useDispatch } from 'react-redux'
 const cx = classNames.bind(styles)
 
 function Login() {
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 	const [showPassword, setShowPassword] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const { values, errors, handleOnChangeInfo, validate } = useForm({
@@ -33,20 +34,19 @@ function Login() {
 		}
 
 		try {
-			store.dispatch(authSlice.actions.isfetchingData())
+			dispatch(authSlice.actions.isfetchingData())
 			const response = await loginUser({
 				email: values.email,
 				password: values.password,
 			})
 			const data = response.data
 			if (data.user) {
-				store.dispatch(authSlice.actions.login(data.user))
+				dispatch(authSlice.actions.login(data.user))
 				navigate('/')
-			}
-			else {
+			} else {
 				setErrorMessage(data.message)
 			}
-			store.dispatch(authSlice.actions.fetchingDataSuccess())
+			dispatch(authSlice.actions.fetchingDataSuccess())
 		} catch (error) {
 			setErrorMessage('Error when login from server!')
 		}

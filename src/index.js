@@ -9,7 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import theme from './theme'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-import { persistor, store } from './redux/stote'
+import { persistor, store } from './redux/store'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
 	<React.StrictMode>
