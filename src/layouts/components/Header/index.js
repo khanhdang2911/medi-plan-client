@@ -19,13 +19,15 @@ import Tooltip from '@mui/material/Tooltip'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Logout from '@mui/icons-material/Logout'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { store } from '~/redux/stote'
 import { logOutUser } from '~/utils/api/auth.api'
+import { useSelector } from 'react-redux'
+import { getAuthSelector } from '~/redux/selectors'
+import { useDispatch } from 'react-redux'
 import authSlice from '~/redux/authSlice'
 function Header() {
 	const navigate = useNavigate()
-	const [isAuthenticated, setIsAuthenticated] = useState(store.getState().auth.isAuthenticated)
-	const user = store.getState().auth.user
+	const auth = useSelector(getAuthSelector)
+	const dispatch = useDispatch()
 	const [anchorEl, setAnchorEl] = useState(null)
 	const open = Boolean(anchorEl)
 	const handleClick = (event) => {
@@ -37,8 +39,7 @@ function Header() {
 	const handleLogout = async () => {
 		try {
 			await logOutUser()
-			store.dispatch(authSlice.actions.logout())
-			setIsAuthenticated(false)
+			dispatch(authSlice.actions.logout())
 			navigate('/')
 		} catch (error) {}
 	}
@@ -151,7 +152,7 @@ function Header() {
 							<Typography sx={{ color: 'rgb(69, 195, 210)', fontSize: '14px', fontWeight: 'bold' }}>Hỗ trợ</Typography>
 						</Box>
 					</Link>
-					{!isAuthenticated ? (
+					{!auth.isAuthenticated ? (
 						<Link to='/login'>
 							<Button
 								variant='outlined'
@@ -178,7 +179,7 @@ function Header() {
 									aria-haspopup='true'
 									aria-expanded={open ? 'true' : undefined}
 								>
-									{user.image ? <Avatar src={user.image} /> : <Avatar sx={{ width: 32, height: 32 }}>{user.fullname[0]}</Avatar>}
+									{auth.user?.image ? <Avatar src={auth.user?.image} /> : <Avatar sx={{ width: 32, height: 32 }}>{auth.user?.fullname[0]}</Avatar>}
 								</IconButton>
 							</Tooltip>
 							<Menu
@@ -191,11 +192,15 @@ function Header() {
 								anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 							>
 								<MenuItem onClick={handleClose}>
-									<Avatar
-										sx={{ width: '30px', height: '30px', mr: 1 }}
-										src={user.image ? user.image : ''}
-									/>
-									<Typography>{user.fullname}</Typography>
+									{auth.user?.image ? (
+										<Avatar
+											src={auth.user?.image}
+											sx={{ width: '30px', height: '30px', mr: 1 }}
+										/>
+									) : (
+										<Avatar sx={{ width: '30px', height: '30px', mr: 1 }}>{auth.user?.fullname[0]}</Avatar>
+									)}
+									<Typography>{auth.user?.fullname}</Typography>
 								</MenuItem>
 								<Divider />
 								<MenuItem onClick={handleClose}>

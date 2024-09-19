@@ -3,7 +3,7 @@ import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { refreshToken } from './api/auth.api'
 import authSlice from '~/redux/authSlice'
-import { store } from '~/redux/stote'
+import { store } from '~/redux/store'
 // Set config defaults when creating the instance
 const instance = axios.create({
 	baseURL: process.env.REACT_APP_BACKEND_API_URL,

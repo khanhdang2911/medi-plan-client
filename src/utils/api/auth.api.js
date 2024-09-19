@@ -2,7 +2,7 @@
 
 import { refreshInstance as axiosRefresh } from '../httpRequest'
 import axios from '../httpRequest'
-import { store } from '~/redux/stote'
+import { store } from '~/redux/store'
 const refreshToken = async () => {
 	try {
 		const tokenRes = await axiosRefresh.post(
