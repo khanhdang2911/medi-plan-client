@@ -9,6 +9,8 @@ import BannerHome from './Banner'
 import RemoteMedical from './RemoteMedical'
 import MedicalFacility from './MedicalFacility'
 import OutstandingDoctor from './OutstandingDoctor'
+import Handbook from './Handbook'
+
 function Home() {
 	//
 	const [alert, setAlert] = useState({ severity: 'success', text: '' })
@@ -38,7 +40,9 @@ function Home() {
 			{/* Co so y te */}
 			<MedicalFacility />
 			{/* Bac si noi bat */}
-			<OutstandingDoctor/>
+			<OutstandingDoctor />
+			{/* Cam nang */}
+			<Handbook />
 			{/* Alert */}
 			<Snackbar
 				open={open}
