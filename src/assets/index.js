@@ -11,5 +11,6 @@ const images = {
 	bacsitieuhoatuxa: require('./images/bacsitieuhoatuxa.png'),
 	suckhoetinhthantuxa: require('./images/suckhoetinhthantuxa.png'),
 	tamlituxa: require('./images/tamlituxa.png'),
+	bg_bacsinoibat: require('./images/bg_bacsinoibat.png'),
 }
 export default images

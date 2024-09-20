@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import BannerHome from './Banner'
 import RemoteMedical from './RemoteMedical'
+import MedicalFacility from './MedicalFacility'
+import OutstandingDoctor from './OutstandingDoctor'
 function Home() {
 	//
 	const [alert, setAlert] = useState({ severity: 'success', text: '' })
@@ -33,6 +35,10 @@ function Home() {
 			<BannerHome />
 			{/* Kham tu xa */}
 			<RemoteMedical />
+			{/* Co so y te */}
+			<MedicalFacility />
+			{/* Bac si noi bat */}
+			<OutstandingDoctor/>
 			{/* Alert */}
 			<Snackbar
 				open={open}
