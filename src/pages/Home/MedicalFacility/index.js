@@ -7,30 +7,30 @@ import images from '~/assets'
 var items = [
 	{
 		image: images.bacsicoxuongkhoptuxa,
-		name: 'Bác sĩ cơ xương khớp từ xa',
+		name: 'Bệnh viện hữu nghị Việt Đức',
 	},
 	{
 		image: images.bacsidalieutuxa,
-		name: 'Bác sĩ da liễu từ xa',
+		name: 'Bệnh viện chợ Rẫy',
 	},
 	{
 		image: images.bacsinoikhoatuxa,
-		name: 'Bác sĩ nội khoa từ xa',
+		name: 'Doctor Check',
 	},
 	{
 		image: images.bacsitieuhoatuxa,
-		name: 'Bác sĩ tiêu hóa từ xa',
+		name: 'Phòng khám đại học Y Dược 1',
 	},
 	{
 		image: images.suckhoetinhthantuxa,
-		name: 'Sức khỏe tinh thần từ xa',
+		name: 'Trung tâm y tế quận 1',
 	},
 	{
 		image: images.tamlituxa,
-		name: 'Tâm lí từ xa',
+		name: 'Bênh viện ung bướu',
 	},
 ]
-function RemoteMedical() {
+function MedicalFacility() {
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'center', padding: '30px 0' }}>
 			<Box sx={{ width: (theme) => theme.booking_care.WIDTH_COMMON }}>
@@ -38,7 +38,7 @@ function RemoteMedical() {
 					variant='h5'
 					sx={{ fontWeight: '600', opacity: '0.9', mb: '30px' }}
 				>
-					Khám từ xa
+					Cơ sở y tế
 				</Typography>
 				<Carousel
 					animation='slide'
@@ -75,17 +75,17 @@ function ManyItem(props) {
 						}}
 					>
 						<img
-							src={item.image}
-							alt='khamtuxa'
+							src='https://cdn.bookingcare.vn/fo/w384/2018/06/18/083122lo-go-viet-duc.jpg'
+							alt='cosoyte'
 							width='329'
-							height='215'
+							height='157'
 							style={{ objectFit: 'cover' }}
 						/>
-						<Typography sx={{ fontSize: '1.2rem', fontWeight: '600' }}>{item.name}</Typography>
+						<Typography sx={{ fontSize: '1.2rem', fontWeight: '600', mt: 2 }}>{item.name}</Typography>
 					</Box>
 				)
 			})}
 		</Box>
 	)
 }
-export default RemoteMedical
+export default MedicalFacility
