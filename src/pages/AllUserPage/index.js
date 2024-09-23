@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography'
 import AddUserModal from '~/pages/AllUserPage/AddUserModal'
 import EditUserModal from '~/pages/AllUserPage/EditUserModal'
 import DeleteUserModal from './DeleteUserModal'
-import { getAllUser } from '~/utils/api/auth.api'
+import { getAllPosition, getAllRole, getAllUser } from '~/utils/api/auth.api'
 
 const AllUserPage = () => {
   const [openAlert, setOpenAlert] = useState(false)
@@ -27,6 +27,8 @@ const AllUserPage = () => {
   const [allUserData, setAllUserData] = useState([])
   const [userEdit, setUserEdit] = useState({})
   const [userDeleteId, setUserDeleteId] = useState()
+  const [positions, setPositions] = useState([])
+  const [roles, setRole] = useState([])
   const navigate = useNavigate()
   //modal add user
   const [openModalAddUser, setOpenModalAddUser] = useState(false)
@@ -80,6 +82,25 @@ const AllUserPage = () => {
       }
     }
     fetchGetAllUser()
+    const fetchPositionAndRole = async () => {
+      try {
+        const responsePosition = await getAllPosition()
+        const positionsData = responsePosition.data.typeValues
+        setPositions(positionsData)
+        const responseRole = await getAllRole()
+        const rolesData = responseRole.data.typeValues
+        setRole(rolesData)
+      } catch (error) {
+        navigate('/', {
+          replace: true,
+          state: {
+            severity: 'error',
+            text: `Error from server !!!`,
+          },
+        })
+      }
+    }
+    fetchPositionAndRole()
   }, [navigate])
   return (
     <>
@@ -157,6 +178,8 @@ const AllUserPage = () => {
         setAllUserData={setAllUserData}
         setAlert={setAlert}
         setOpenAlert={setOpenAlert}
+        positions={positions}
+        roles={roles}
       />
       <EditUserModal
         openModalEditUser={openModalEditUser}
@@ -166,6 +189,8 @@ const AllUserPage = () => {
         setAlert={setAlert}
         setOpenAlert={setOpenAlert}
         userEdit={userEdit}
+        positions={positions}
+        roles={roles}
       />
       <DeleteUserModal
         openDeleteModal={openDeleteModal}

@@ -54,8 +54,8 @@ function Register() {
         phonenumber: values.phonenumber,
         gender: gender === 'male' ? '1' : '0',
       })
-      if (dataFromResponse.data?.errMessage && dataFromResponse.data?.errCode !== 0) {
-        setErrorMessage(dataFromResponse.data.errMessage)
+      if (dataFromResponse.data?.success === false) {
+        setErrorMessage(dataFromResponse.data.message)
       } else {
         navigate('/login')
       }

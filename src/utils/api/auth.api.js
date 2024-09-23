@@ -65,9 +65,30 @@ const updateUser = async (data) => {
   })
   return response
 }
+const updateUserForAdmin = async (data) => {
+  const response = await axios.put('/users/update-user-for-admin', data)
+  return response
+}
 
 const changePassword = async (data) => {
   const response = await axios.put('/users/change-password', data)
+  return response
+}
+
+const getAllPosition = async () => {
+  const response = await axios.get('/users/get-type-allcode', {
+    params: {
+      type: 'POSITION',
+    },
+  })
+  return response
+}
+const getAllRole = async () => {
+  const response = await axios.get('/users/get-type-allcode', {
+    params: {
+      type: 'ROLE',
+    },
+  })
   return response
 }
 export {
@@ -80,5 +101,8 @@ export {
   getAccount,
   getUserById,
   updateUser,
+  updateUserForAdmin,
   changePassword,
+  getAllPosition,
+  getAllRole,
 }
