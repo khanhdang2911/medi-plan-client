@@ -6,7 +6,7 @@ import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { updateUser } from '~/utils/api/auth.api'
+import { updateUserForAdmin } from '~/utils/api/auth.api'
 
 const style = {
   position: 'absolute',
@@ -31,7 +31,10 @@ export default function EditUserModal({
   setAlert,
   setOpenAlert,
   userEdit,
+  positions,
+  roles,
 }) {
+  console.log(userEdit)
   const [error, setError] = useState('')
   const [allValues, setAllValues] = useState({
     email: '',
@@ -39,6 +42,8 @@ export default function EditUserModal({
     phonenumber: '',
     address: '',
     gender: '',
+    roleId: '',
+    positionId: '',
   })
   useEffect(() => {
     // When open modal, set user data current to edit
@@ -48,27 +53,36 @@ export default function EditUserModal({
       phonenumber: userEdit.phonenumber || '',
       address: userEdit.address || '',
       gender: userEdit.gender || '',
+      roleId: userEdit.roleId || '',
+      positionId: userEdit.positionId || '',
     })
   }, [userEdit])
 
   function handleValidate() {
     const allValueArray = Object.entries(allValues)
+    console.log(allValueArray)
     for (let i = 0; i < allValueArray.length; i++) {
-      if (!allValueArray[i][1]) {
+      if (!allValueArray[i][1].toString()) {
         setError(`Please enter your ${allValueArray[i][0]}`)
         return false
       }
     }
+
+    //Check email
+    if (!/^\S+@\S+\.\S+$/.test(allValues.email)) {
+      setError('Please enter a valid email')
+      return false
+    }
+    //Check phone number is 10 digits and not contain any character
+    if (!/^\d{10}$/.test(allValues.phonenumber)) {
+      setError('Please enter a valid phone number (10 digits)')
+      return false
+    }
+
     return true
   }
   const handleCancelEditUser = () => {
-    setAllValues({
-      email: '',
-      fullname: '',
-      phonenumber: '',
-      address: '',
-      gender: '',
-    })
+    setAllValues(userEdit)
     setError('')
     handleCloseModalEditUser()
   }
@@ -76,7 +90,7 @@ export default function EditUserModal({
     const check = handleValidate()
     if (!check) return
     //api update user
-    const response = await updateUser({ ...allValues, id: userEdit.id })
+    const response = await updateUserForAdmin({ ...allValues, id: userEdit.id })
     if (response.data?.success === false) {
       setError(response.data?.message)
       return
@@ -118,7 +132,7 @@ export default function EditUserModal({
       >
         <Fade in={openModalEditUser}>
           <Box sx={style}>
-            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>CREATE NEW USER</Typography>
+            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>EDIT USER</Typography>
             <Typography sx={{ color: 'red' }}>{error}</Typography>
             <TextField
               id="outlined-basic-email"
@@ -162,21 +176,67 @@ export default function EditUserModal({
               onChange={(e) => handleOnChangeValues(e)}
               sx={{ width: '100%' }}
             />
-            <Box>
-              <FormControl sx={{ minWidth: 100 }} size="small">
-                <InputLabel id="gender-simple-select-label">Gender</InputLabel>
-                <Select
-                  labelId="gender-simple-select-label"
-                  id="gender-simple-select"
-                  name="gender"
-                  value={allValues.gender ? '1' : '0'}
-                  label="Gender"
-                  onChange={(e) => handleOnChangeValues(e)}
-                >
-                  <MenuItem value="1">Male</MenuItem>
-                  <MenuItem value="0">Female</MenuItem>
-                </Select>
-              </FormControl>
+            {/* Select area */}
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="gender-simple-select-label">Gender</InputLabel>
+                  <Select
+                    labelId="gender-simple-select-label"
+                    id="gender-simple-select"
+                    name="gender"
+                    value={allValues.gender ? '1' : '0'}
+                    label="Gender"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    <MenuItem value="1">Male</MenuItem>
+                    <MenuItem value="0">Female</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="roleId-simple-select-label">Role</InputLabel>
+                  <Select
+                    labelId="roleId-simple-select-label"
+                    id="roleId-simple-select"
+                    name="roleId"
+                    value={allValues.roleId}
+                    label="Role"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    {roles.map((role, index) => {
+                      return (
+                        <MenuItem key={index} value={role.keyMap}>
+                          {role.valueEn}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="positionId-simple-select-label">Position</InputLabel>
+                  <Select
+                    labelId="positionId-simple-select-label"
+                    id="positionId-simple-select"
+                    name="positionId"
+                    value={allValues.positionId}
+                    label="Position"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    {positions.map((position, index) => {
+                      return (
+                        <MenuItem key={index} value={position.keyMap}>
+                          {position.valueEn}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
               <Button variant="contained" onClick={handleSaveChangesUser} sx={{ fontWeight: '500' }}>

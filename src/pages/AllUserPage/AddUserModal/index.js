@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
@@ -5,7 +7,6 @@ import Fade from '@mui/material/Fade'
 import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useState } from 'react'
 import { registerUser } from '~/utils/api/auth.api'
 
 const style = {
@@ -29,6 +30,8 @@ export default function AddUserModal({
   setAllUserData,
   setAlert,
   setOpenAlert,
+  positions,
+  roles,
 }) {
   const [error, setError] = useState('')
   const [allValues, setAllValues] = useState({
@@ -38,6 +41,8 @@ export default function AddUserModal({
     phonenumber: '',
     address: '',
     gender: '',
+    roleId: '',
+    positionId: '',
   })
 
   const handleValidate = () => {
@@ -48,6 +53,16 @@ export default function AddUserModal({
         return false
       }
     }
+    //Check email
+    if (!/^\S+@\S+\.\S+$/.test(allValues.email)) {
+      setError('Please enter a valid email')
+      return false
+    }
+    //Check phone number is 10 digits and not contain any character
+    if (!/^\d{10}$/.test(allValues.phonenumber)) {
+      setError('Please enter a valid phone number (10 digits)')
+      return false
+    }
     return true
   }
   const handleCreateUser = async () => {
@@ -55,8 +70,8 @@ export default function AddUserModal({
     if (!check) return
     //Call api
     const response = await registerUser(allValues)
-    if (response.data?.errCode !== 0 && response.data?.errMessage) {
-      setError(response.data?.errMessage)
+    if (response.data?.success === false) {
+      setError(response.data?.message)
       return
     }
     //Create user successfully
@@ -158,23 +173,69 @@ export default function AddUserModal({
               onChange={(e) => handleOnChangeValues(e)}
               sx={{ width: '100%' }}
             />
-            <Box>
-              <FormControl sx={{ minWidth: 100 }} size="small">
-                <InputLabel id="gender-simple-select-label">Gender</InputLabel>
-                <Select
-                  labelId="gender-simple-select-label"
-                  id="gender-simple-select"
-                  name="gender"
-                  value={allValues.gender}
-                  label="Gender"
-                  onChange={(e) => handleOnChangeValues(e)}
-                >
-                  <MenuItem value="1">Male</MenuItem>
-                  <MenuItem value="0">Female</MenuItem>
-                </Select>
-              </FormControl>
+            {/* Select area */}
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="gender-simple-select-label">Gender</InputLabel>
+                  <Select
+                    labelId="gender-simple-select-label"
+                    id="gender-simple-select"
+                    name="gender"
+                    value={allValues.gender}
+                    label="Gender"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    <MenuItem value="1">Male</MenuItem>
+                    <MenuItem value="0">Female</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="roleId-simple-select-label">Role</InputLabel>
+                  <Select
+                    labelId="roleId-simple-select-label"
+                    id="roleId-simple-select"
+                    name="roleId"
+                    value={allValues.roleId}
+                    label="Role"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    {roles.map((role, index) => {
+                      return (
+                        <MenuItem key={index} value={role.keyMap}>
+                          {role.valueEn}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box>
+                <FormControl sx={{ minWidth: 100 }} size="small">
+                  <InputLabel id="positionId-simple-select-label">Position</InputLabel>
+                  <Select
+                    labelId="positionId-simple-select-label"
+                    id="positionId-simple-select"
+                    name="positionId"
+                    value={allValues.positionId}
+                    label="Position"
+                    onChange={(e) => handleOnChangeValues(e)}
+                  >
+                    {positions.map((position, index) => {
+                      return (
+                        <MenuItem key={index} value={position.keyMap}>
+                          {position.valueEn}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px', mt: 2 }}>
               <Button variant="contained" onClick={handleCreateUser} sx={{ fontWeight: '500' }}>
                 Create
               </Button>
