@@ -22,7 +22,7 @@ const handleRefreshToken = async (config) => {
     try {
       const decodedToken = jwtDecode(accessToken)
       const currentTime = Date.now() / 1000
-      if (currentTime - decodedToken.exp > 200) {
+      if (currentTime - decodedToken.exp > 0) {
         const dataToken = await refreshToken()
         if (dataToken) {
           store.dispatch(authSlice.actions.setAccessTokenFromRefreshToken(dataToken))

@@ -24,7 +24,14 @@ const registerUser = async (data) => {
   const response = await axiosRefresh.post('/users/register', data)
   return response
 }
-
+const createUserForAdmin = async (data) => {
+  const response = await axios.post('/users/create-user-for-admin', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return response
+}
 const loginUser = async (data) => {
   const response = await axiosRefresh.post('/users/login', data)
   return response
@@ -66,7 +73,11 @@ const updateUser = async (data) => {
   return response
 }
 const updateUserForAdmin = async (data) => {
-  const response = await axios.put('/users/update-user-for-admin', data)
+  const response = await axios.put('/users/update-user-for-admin', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
   return response
 }
 
@@ -94,6 +105,7 @@ const getAllRole = async () => {
 export {
   refreshToken,
   registerUser,
+  createUserForAdmin,
   loginUser,
   logOutUser,
   getAllUser,

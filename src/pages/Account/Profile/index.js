@@ -19,10 +19,12 @@ import { useNavigate } from 'react-router-dom'
 import authSlice from '~/redux/authSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { getAuthSelector } from '~/redux/selectors'
+import Loading from '~/components/Loading'
 function Profile() {
   const auth = useSelector(getAuthSelector)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [imageFile, setImageFile] = useState(null)
   const [imageURL, setImageURL] = useState('')
   const [error, setError] = useState('')
@@ -54,8 +56,10 @@ function Profile() {
   }, [imageURL])
   useEffect(() => {
     //get account by refresh token
+
     const getAccountInfo = async () => {
       try {
+        setLoading(true)
         const response = await getAccount()
         const data = response.data
         if (data.success === true) {
@@ -71,7 +75,9 @@ function Profile() {
         } else {
           navigate('/')
         }
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
         navigate('/')
       }
     }
@@ -128,6 +134,7 @@ function Profile() {
     if (checkValidate === false) return
     //update info
     try {
+      setLoading(true)
       const formData = new FormData()
       formData.append('id', allValues.id)
       formData.append('fullname', allValues.fullname)
@@ -152,13 +159,16 @@ function Profile() {
         setOpenAlert(true)
         dispatch(authSlice.actions.updateUser(data.user))
       }
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       setAlert({ severity: 'error', text: 'Cập nhật thông tin thất bại' })
       setOpenAlert(true)
     }
   }
   return (
     <>
+      {loading && <Loading />}
       <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem', opacity: 0.9 }}>Thông tin cá nhân</Typography>
       <Box sx={{ mt: '20px', display: 'flex', gap: 2 }}>
         <Box>

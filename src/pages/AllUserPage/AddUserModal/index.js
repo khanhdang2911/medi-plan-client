@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -6,8 +6,14 @@ import Modal from '@mui/material/Modal'
 import Fade from '@mui/material/Fade'
 import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { registerUser } from '~/utils/api/auth.api'
+import Button from '@mui/material/Button'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import Avatar from '@mui/material/Avatar'
+import { createUserForAdmin } from '~/utils/api/auth.api'
+import Loading from '~/components/Loading'
 
 const style = {
   position: 'absolute',
@@ -33,7 +39,10 @@ export default function AddUserModal({
   positions,
   roles,
 }) {
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [imageURL, setImageURL] = useState('')
+  const [imageFile, setImageFile] = useState(null)
   const [allValues, setAllValues] = useState({
     email: '',
     fullname: '',
@@ -44,7 +53,29 @@ export default function AddUserModal({
     roleId: '',
     positionId: '',
   })
-
+  useEffect(() => {
+    return () => {
+      if (imageURL) {
+        URL.revokeObjectURL(imageURL)
+      }
+    }
+  }, [imageURL])
+  const handleUploadAvatar = (e) => {
+    const imageFile = e.target.files[0]
+    if (imageFile.type.split('/')[0] !== 'image') {
+      setError('File không đúng định dạng ảnh')
+      return false
+    }
+    if (imageFile.type !== 'image/jpeg' && imageFile.type !== 'image/png' && imageFile.type !== 'image/jpg') {
+      setError('Chỉ được up ảnh dưới dạng jpg, jpeg, png')
+      return false
+    }
+    if (imageFile) {
+      const newImageURL = URL.createObjectURL(imageFile)
+      setImageURL(newImageURL)
+      setImageFile(imageFile)
+    }
+  }
   const handleValidate = () => {
     const allValueArray = Object.entries(allValues)
     for (let i = 0; i < allValueArray.length; i++) {
@@ -69,11 +100,22 @@ export default function AddUserModal({
     const check = handleValidate()
     if (!check) return
     //Call api
-    const response = await registerUser(allValues)
+    setLoading(true)
+    const formData = new FormData()
+    //loop through allValues and append to formData
+    for (const [key, value] of Object.entries(allValues)) {
+      formData.append(key, value)
+    }
+    if (imageFile) {
+      formData.append('image', imageFile)
+    }
+    const response = await createUserForAdmin(formData)
     if (response.data?.success === false) {
+      setLoading(false)
       setError(response.data?.message)
       return
     }
+    setLoading(false)
     //Create user successfully
     handleCancelCreateUser()
     //get all user again
@@ -99,12 +141,17 @@ export default function AddUserModal({
       phonenumber: '',
       address: '',
       gender: '',
+      roleId: '',
+      positionId: '',
     })
     setError('')
+    setImageURL('')
+    setImageFile(null)
     handleCloseModalAddUser()
   }
   return (
     <div>
+      {loading && <Loading />}
       <Modal
         open={openModalAddUser}
         onClose={handleCancelCreateUser}
@@ -122,6 +169,14 @@ export default function AddUserModal({
           <Box sx={style}>
             <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>CREATE NEW USER</Typography>
             <Typography sx={{ color: 'red' }}>{error}</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Avatar sx={{ width: '100px', height: '100px' }} src={imageURL} />
+              <Button variant="contained" component="label" sx={{ mt: 1 }}>
+                Upload avatar
+                <input onChange={handleUploadAvatar} type="file" hidden />
+              </Button>
+            </Box>
+
             <TextField
               id="outlined-basic-email"
               label="Email"
