@@ -2,40 +2,23 @@ import { Box, Typography } from '@mui/material'
 import Carousel from 'react-material-ui-carousel'
 import Avatar from '@mui/material/Avatar'
 import images from '~/assets'
+import { useEffect, useState } from 'react'
+import { getTopDoctorHome } from '~/utils/api/doctor.api'
 
-var items = [
-  {
-    image: images.bacsicoxuongkhoptuxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Cơ xương khớp',
-  },
-  {
-    image: images.bacsidalieutuxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Hô hấp - Phổi',
-  },
-  {
-    image: images.bacsinoikhoatuxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Thần kinh - Não',
-  },
-  {
-    image: images.bacsitieuhoatuxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Ngoại thần kinh',
-  },
-  {
-    image: images.suckhoetinhthantuxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Viêm gan - Máu',
-  },
-  {
-    image: images.tamlituxa,
-    name: 'Bác sĩ chuyên khoa Anberlin',
-    speciaty: 'Sức khỏe tâm thần',
-  },
-]
 function OutstandingDoctor() {
+  const [doctors, setDoctors] = useState([])
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        let response = await getTopDoctorHome(6)
+        const data = response.data
+        setDoctors(data.doctors)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchDoctors()
+  }, [])
   return (
     <Box
       sx={{
@@ -51,8 +34,8 @@ function OutstandingDoctor() {
           Bác sĩ nổi bật
         </Typography>
         <Carousel animation="slide" autoPlay={false} duration={1000} navButtonsAlwaysVisible={true} indicators={false}>
-          {items.slice(0, 2).map((item, i) => (
-            <ManyItem key={i} manyItems={items.slice(i * 3, i * 3 + 3)} />
+          {doctors.slice(0, 2).map((doctor, i) => (
+            <ManyItem key={doctor.id} manyItems={doctors.slice(i * 3, i * 3 + 3)} />
           ))}
         </Carousel>
       </Box>
@@ -73,14 +56,25 @@ function ManyItem(props) {
               padding: '5px',
               borderRadius: '10px',
               width: '341px',
+              height: '300px',
             }}
           >
-            <Avatar
-              sx={{ width: '200px', height: '200px' }}
-              src="https://cdn.bookingcare.vn/fo/w384/2019/09/04/094041pho-giao-su-nguyen-van-lieu.jpg"
-            />
-            <Typography sx={{ fontSize: '1.2rem', fontWeight: '600', mt: 1 }}>{item.name}</Typography>
-            <Typography sx={{ fontSize: '1rem', mt: 1 }}>{item.speciaty}</Typography>
+            <Avatar sx={{ width: '180px', height: '180px' }} src={item.image} />
+            <Typography
+              sx={{
+                textAlign: 'center',
+                fontSize: '1rem',
+                fontWeight: '600',
+                mt: 1,
+                width: '70%',
+                maxHeight: '50px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {item.positionData?.valueVi} {item.fullname}
+            </Typography>
+            <Typography sx={{ fontSize: '1rem', mt: 1 }}>Cơ xương khớp</Typography>
           </Box>
         )
       })}
