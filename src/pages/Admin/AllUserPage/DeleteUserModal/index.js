@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal'
 import Button from '@mui/material/Button'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import Divider from '@mui/material/Divider'
-import { deleteUser } from '~/utils/api/auth.api'
+import { deleteUser } from '~/services/api/auth.api'
 const style = {
   position: 'absolute',
   top: '50%',

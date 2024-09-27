@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import { refreshToken } from './api/auth.api'
+import { refreshToken } from '../services/api/auth.api'
 import authSlice from '~/redux/authSlice'
 import { store } from '~/redux/store'
 // Set config defaults when creating the instance

@@ -5,9 +5,10 @@ const routes = {
   liveHealthy: '/live-healthy',
   login: '/login',
   register: '/register',
-  allUserPage: '/all-user-page',
   account: '/account/*',
   notFound: '*',
+
+  admin: '/admin/*',
 }
 
 export default routes

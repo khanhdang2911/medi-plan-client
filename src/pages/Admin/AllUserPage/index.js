@@ -16,10 +16,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import PersonAdd from '@mui/icons-material/PersonAdd'
 import Typography from '@mui/material/Typography'
-import AddUserModal from '~/pages/AllUserPage/AddUserModal'
-import EditUserModal from '~/pages/AllUserPage/EditUserModal'
+import AddUserModal from '~/pages/Admin/AllUserPage/AddUserModal'
+import EditUserModal from '~/pages/Admin/AllUserPage/EditUserModal'
 import DeleteUserModal from './DeleteUserModal'
-import { getAllPosition, getAllRole, getAllUser } from '~/utils/api/auth.api'
+import { getAllPosition, getAllRole, getAllUser } from '~/services/api/auth.api'
 
 const AllUserPage = () => {
   const [openAlert, setOpenAlert] = useState(false)
@@ -105,7 +105,7 @@ const AllUserPage = () => {
   return (
     <>
       {allUserData.length > 0 && (
-        <Box sx={{ padding: '20px 40px' }}>
+        <Box sx={{ padding: '10px 20px' }}>
           <Typography variant="h3" sx={{ textAlign: 'center', fontWeight: 'bold', color: '#0984e3', mb: '20px' }}>
             MANAGE USER
           </Typography>
