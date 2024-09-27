@@ -1,18 +1,18 @@
+import { useEffect, useState } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import Fade from '@mui/material/Fade'
 import Backdrop from '@mui/material/Backdrop'
 import TextField from '@mui/material/TextField'
-import Avatar from '@mui/material/Avatar'
-
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import { useEffect, useState } from 'react'
-import { updateUserForAdmin } from '~/utils/api/auth.api'
+import Avatar from '@mui/material/Avatar'
+import { createUserForAdmin } from '~/services/api/auth.api'
 import Loading from '~/components/Loading'
 
 const style = {
@@ -30,43 +30,29 @@ const style = {
   gap: '15px',
 }
 
-export default function EditUserModal({
-  openModalEditUser,
-  handleCloseModalEditUser,
-  allUserData,
+export default function AddUserModal({
+  openModalAddUser,
+  handleCloseModalAddUser,
   setAllUserData,
   setAlert,
   setOpenAlert,
-  userEdit,
   positions,
   roles,
 }) {
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [imageURL, setImageURL] = useState('')
   const [imageFile, setImageFile] = useState(null)
-  const [error, setError] = useState('')
   const [allValues, setAllValues] = useState({
     email: '',
     fullname: '',
+    password: '',
     phonenumber: '',
     address: '',
     gender: '',
     roleId: '',
     positionId: '',
   })
-  useEffect(() => {
-    // When open modal, set user data current to edit
-    setAllValues({
-      email: userEdit.email || '',
-      fullname: userEdit.fullname || '',
-      phonenumber: userEdit.phonenumber || '',
-      address: userEdit.address || '',
-      gender: userEdit.gender || '',
-      roleId: userEdit.roleId || '',
-      positionId: userEdit.positionId || '',
-      image: userEdit.image || '',
-    })
-  }, [userEdit])
   useEffect(() => {
     return () => {
       if (imageURL) {
@@ -90,16 +76,14 @@ export default function EditUserModal({
       setImageFile(imageFile)
     }
   }
-  function handleValidate() {
+  const handleValidate = () => {
     const allValueArray = Object.entries(allValues)
-    console.log(allValueArray)
     for (let i = 0; i < allValueArray.length; i++) {
-      if (!allValueArray[i][1].toString()) {
+      if (!allValueArray[i][1]) {
         setError(`Please enter your ${allValueArray[i][0]}`)
         return false
       }
     }
-
     //Check email
     if (!/^\S+@\S+\.\S+$/.test(allValues.email)) {
       setError('Please enter a valid email')
@@ -110,47 +94,36 @@ export default function EditUserModal({
       setError('Please enter a valid phone number (10 digits)')
       return false
     }
-
     return true
   }
-  const handleCancelEditUser = () => {
-    setAllValues(userEdit)
-    setImageURL('')
-    setImageFile(null)
-    setError('')
-    handleCloseModalEditUser()
-  }
-  const handleSaveChangesUser = async () => {
+  const handleCreateUser = async () => {
     const check = handleValidate()
     if (!check) return
-    //api update user
+    //Call api
     setLoading(true)
     const formData = new FormData()
-    formData.append('id', userEdit.id)
-    for (let [key, value] in Object.entries(allValues)) {
+    //loop through allValues and append to formData
+    for (const [key, value] of Object.entries(allValues)) {
       formData.append(key, value)
     }
     if (imageFile) {
       formData.append('image', imageFile)
     }
-    const response = await updateUserForAdmin(formData)
+    const response = await createUserForAdmin(formData)
     if (response.data?.success === false) {
       setLoading(false)
       setError(response.data?.message)
       return
     }
     setLoading(false)
-    //Update user successfully
-    handleCancelEditUser()
+    //Create user successfully
+    handleCancelCreateUser()
     //get all user again
-    const updateUsers = allUserData.map((user) => {
-      return user.id === userEdit.id ? response.data.user : user
-    })
-    setAllUserData(updateUsers)
+    setAllUserData((prev) => [...prev, response.data.user])
     //set Alert
     setAlert({
       severity: 'success',
-      text: 'Update user successfully!',
+      text: 'Create user successfully!',
     })
     setOpenAlert(true)
   }
@@ -160,12 +133,28 @@ export default function EditUserModal({
     setAllValues((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleCancelCreateUser = () => {
+    setAllValues({
+      email: '',
+      fullname: '',
+      password: '',
+      phonenumber: '',
+      address: '',
+      gender: '',
+      roleId: '',
+      positionId: '',
+    })
+    setError('')
+    setImageURL('')
+    setImageFile(null)
+    handleCloseModalAddUser()
+  }
   return (
     <div>
       {loading && <Loading />}
       <Modal
-        open={openModalEditUser}
-        onClose={handleCancelEditUser}
+        open={openModalAddUser}
+        onClose={handleCancelCreateUser}
         aria-labelledby="modal-modal-title-add-user"
         aria-describedby="modal-modal-description-add-user"
         closeAfterTransition
@@ -176,26 +165,36 @@ export default function EditUserModal({
           },
         }}
       >
-        <Fade in={openModalEditUser}>
+        <Fade in={openModalAddUser}>
           <Box sx={style}>
-            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>EDIT USER</Typography>
+            <Typography sx={{ fontWeight: 'bold', textAlign: 'center' }}>CREATE NEW USER</Typography>
             <Typography sx={{ color: 'red' }}>{error}</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Avatar sx={{ width: '100px', height: '100px' }} src={imageURL || userEdit.image} />
+              <Avatar sx={{ width: '100px', height: '100px' }} src={imageURL} />
               <Button variant="contained" component="label" sx={{ mt: 1 }}>
                 Upload avatar
                 <input onChange={handleUploadAvatar} type="file" hidden />
               </Button>
             </Box>
+
             <TextField
               id="outlined-basic-email"
               label="Email"
               value={allValues.email}
-              disabled
               name="email"
               variant="outlined"
               size="small"
               sx={{ width: '100%' }}
+              onChange={(e) => handleOnChangeValues(e)}
+            />
+            <TextField
+              id="outlined-basic-password"
+              type="password"
+              value={allValues.password}
+              label="Password"
+              name="password"
+              variant="outlined"
+              size="small"
               onChange={(e) => handleOnChangeValues(e)}
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -238,7 +237,7 @@ export default function EditUserModal({
                     labelId="gender-simple-select-label"
                     id="gender-simple-select"
                     name="gender"
-                    value={allValues.gender ? '1' : '0'}
+                    value={allValues.gender}
                     label="Gender"
                     onChange={(e) => handleOnChangeValues(e)}
                   >
@@ -247,7 +246,6 @@ export default function EditUserModal({
                   </Select>
                 </FormControl>
               </Box>
-
               <Box>
                 <FormControl sx={{ minWidth: 100 }} size="small">
                   <InputLabel id="roleId-simple-select-label">Role</InputLabel>
@@ -291,13 +289,14 @@ export default function EditUserModal({
                 </FormControl>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
-              <Button variant="contained" onClick={handleSaveChangesUser} sx={{ fontWeight: '500' }}>
-                Save
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '20px', mt: 2 }}>
+              <Button variant="contained" onClick={handleCreateUser} sx={{ fontWeight: '500' }}>
+                Create
               </Button>
               <Button
                 variant="contained"
-                onClick={handleCancelEditUser}
+                onClick={handleCancelCreateUser}
                 sx={{ bgcolor: '#ff7675', '&:hover': { bgcolor: '#ff7675' }, fontWeight: '500' }}
               >
                 Cancel

@@ -7,7 +7,7 @@ import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
-import { loginUser } from '~/utils/api/auth.api'
+import { loginUser } from '~/services/api/auth.api'
 import authSlice from '~/redux/authSlice'
 import { useDispatch } from 'react-redux'
 const cx = classNames.bind(styles)

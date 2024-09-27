@@ -6,7 +6,7 @@ import styles from '../Login/Login.module.scss'
 import InputField from '~/components/InputField'
 import useForm from '~/hooks/useForm'
 import { useNavigate } from 'react-router-dom'
-import { registerUser } from '~/utils/api/auth.api'
+import { registerUser } from '~/services/api/auth.api'
 const cx = classNames.bind(styles)
 
 function Register() {

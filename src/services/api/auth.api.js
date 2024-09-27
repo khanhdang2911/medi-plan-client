@@ -1,5 +1,5 @@
-import { refreshInstance as axiosRefresh } from '../httpRequest'
-import axios from '../httpRequest'
+import { refreshInstance as axiosRefresh } from '../../utils/httpRequest'
+import axios from '../../utils/httpRequest'
 import { store } from '~/redux/store'
 const refreshToken = async () => {
   try {

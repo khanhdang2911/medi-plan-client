@@ -3,7 +3,7 @@ import Carousel from 'react-material-ui-carousel'
 import Avatar from '@mui/material/Avatar'
 import images from '~/assets'
 import { useEffect, useState } from 'react'
-import { getTopDoctorHome } from '~/utils/api/doctor.api'
+import { getTopDoctorHome } from '~/services/api/doctor.api'
 
 function OutstandingDoctor() {
   const [doctors, setDoctors] = useState([])

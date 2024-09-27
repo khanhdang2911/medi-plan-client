@@ -6,9 +6,9 @@ import LiveHealthy from '~/pages/LiveHealthy'
 import routes from '~/config/routes'
 import DefaultLayout from '~/layouts/DefaultLayout'
 import Register from '~/pages/Auth/Register'
-import AllUsePage from '~/pages/AllUserPage'
 import NotFound from '~/pages/NotFound'
 import Account from '~/pages/Account'
+import Admin from '~/pages/Admin'
 
 const publicRoutes = [
   {
@@ -60,8 +60,8 @@ const authRoutes = [
   },
 
   {
-    path: routes.allUserPage,
-    component: AllUsePage,
+    path: routes.admin,
+    component: Admin,
     layout: null,
   },
 ]

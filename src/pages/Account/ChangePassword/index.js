@@ -2,7 +2,7 @@ import { Alert, Button, Snackbar, TextField, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 import KeyIcon from '@mui/icons-material/Key'
-import { changePassword } from '~/utils/api/auth.api'
+import { changePassword } from '~/services/api/auth.api'
 function ChangePasword() {
   const [allValues, setAllValues] = useState({
     oldPassword: '',
