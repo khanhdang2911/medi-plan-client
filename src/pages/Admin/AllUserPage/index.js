@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Snackbar from '@mui/material/Snackbar'
-import Alert from '@mui/material/Alert'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -20,10 +18,9 @@ import AddUserModal from '~/pages/Admin/AllUserPage/AddUserModal'
 import EditUserModal from '~/pages/Admin/AllUserPage/EditUserModal'
 import DeleteUserModal from './DeleteUserModal'
 import { getAllPosition, getAllRole, getAllUser } from '~/services/api/auth.api'
-
+import ToastContainerCustom from '~/components/ToastContainerCustom'
+import { notifySuccess } from '~/helpers/notify'
 const AllUserPage = () => {
-  const [openAlert, setOpenAlert] = useState(false)
-  const [alert, setAlert] = useState({ severity: 'success', text: '' })
   const [allUserData, setAllUserData] = useState([])
   const [userEdit, setUserEdit] = useState({})
   const [userDeleteId, setUserDeleteId] = useState()
@@ -53,24 +50,12 @@ const AllUserPage = () => {
     setOpenDeleteModal(true)
   }
 
-  const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpenAlert(false)
-  }
-
   useEffect(() => {
     const fetchGetAllUser = async () => {
       try {
-        const data = await getAllUser()
-        setAllUserData(data.data.allUser)
-        setAlert({
-          severity: 'success',
-          text: 'Get all user successfully!',
-        })
-        setOpenAlert(true)
+        const response = await getAllUser()
+        setAllUserData(response.data.allUser)
+        notifySuccess('Get all user success')
       } catch (error) {
         navigate('/', {
           replace: true,
@@ -162,22 +147,11 @@ const AllUserPage = () => {
           </TableContainer>
         </Box>
       )}
-      <Snackbar
-        open={openAlert}
-        autoHideDuration={1000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} variant="filled" sx={{ width: '100%' }}>
-          {alert.text}
-        </Alert>
-      </Snackbar>
+
       <AddUserModal
         openModalAddUser={openModalAddUser}
         handleCloseModalAddUser={handleCloseModalAddUser}
         setAllUserData={setAllUserData}
-        setAlert={setAlert}
-        setOpenAlert={setOpenAlert}
         positions={positions}
         roles={roles}
       />
@@ -186,8 +160,6 @@ const AllUserPage = () => {
         handleCloseModalEditUser={handleCloseModalEditUser}
         setAllUserData={setAllUserData}
         allUserData={allUserData}
-        setAlert={setAlert}
-        setOpenAlert={setOpenAlert}
         userEdit={userEdit}
         positions={positions}
         roles={roles}
@@ -196,10 +168,9 @@ const AllUserPage = () => {
         openDeleteModal={openDeleteModal}
         setOpenDeleteModal={setOpenDeleteModal}
         setAllUserData={setAllUserData}
-        setAlert={setAlert}
-        setOpenAlert={setOpenAlert}
         userDeleteId={userDeleteId}
       />
+      <ToastContainerCustom />
     </>
   )
 }

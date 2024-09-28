@@ -5,6 +5,7 @@ import Button from '@mui/material/Button'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import Divider from '@mui/material/Divider'
 import { deleteUser } from '~/services/api/auth.api'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -20,42 +21,23 @@ const style = {
   gap: '15px',
 }
 
-export default function DeleteUserModal({
-  openDeleteModal,
-  setOpenDeleteModal,
-  setAlert,
-  setOpenAlert,
-  setAllUserData,
-  userDeleteId,
-}) {
+export default function DeleteUserModal({ openDeleteModal, setOpenDeleteModal, setAllUserData, userDeleteId }) {
   const handleCloseDeleteModal = () => setOpenDeleteModal(false)
   const handleDeleteUser = async () => {
     try {
       const response = await deleteUser(userDeleteId)
       if (response.data?.errCode !== 0 && response.data?.errMessage) {
-        setAlert({
-          severity: 'error',
-          text: response.data.errMessage,
-        })
-        setOpenAlert(true)
+        notifyError(response.data.errMessage)
         return
       } else {
-        setAlert({
-          severity: 'success',
-          text: 'Delete user successfully',
-        })
-        setOpenAlert(true)
+        notifySuccess('Delete user success')
       }
       //Close modal
       handleCloseDeleteModal()
       //Call api re-render all user page again
       setAllUserData((prev) => prev.filter((user) => user.id !== userDeleteId))
     } catch (error) {
-      setAlert({
-        severity: 'error',
-        text: error.message,
-      })
-      setOpenAlert(true)
+      notifyError('Delete user failed')
     }
   }
   return (

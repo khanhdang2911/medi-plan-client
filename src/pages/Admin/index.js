@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import images from '~/assets'
 import AllUserPage from './AllUserPage'
 import ManageDoctorInfo from './ManageDoctorInfo'
@@ -10,7 +10,9 @@ function Admin() {
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '15%', position: 'fixed' }}>
         <Box sx={{ width: '100%', height: '100px' }}>
-          <img src={images.logo} alt="logo" width="100%" height="100%" />
+          <Link to="/">
+            <img src={images.logo} alt="logo" width="100%" height="100%" />
+          </Link>
         </Box>
         <Divider />
         <Box sx={{ width: '100%', height: 'calc(100vh - 100px)', bgcolor: '' }}>

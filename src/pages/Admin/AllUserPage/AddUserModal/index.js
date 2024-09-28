@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Avatar from '@mui/material/Avatar'
 import { createUserForAdmin } from '~/services/api/auth.api'
 import Loading from '~/components/Loading'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 
 const style = {
   position: 'absolute',
@@ -30,15 +31,7 @@ const style = {
   gap: '15px',
 }
 
-export default function AddUserModal({
-  openModalAddUser,
-  handleCloseModalAddUser,
-  setAllUserData,
-  setAlert,
-  setOpenAlert,
-  positions,
-  roles,
-}) {
+export default function AddUserModal({ openModalAddUser, handleCloseModalAddUser, setAllUserData, positions, roles }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [imageURL, setImageURL] = useState('')
@@ -63,11 +56,11 @@ export default function AddUserModal({
   const handleUploadAvatar = (e) => {
     const imageFile = e.target.files[0]
     if (imageFile.type.split('/')[0] !== 'image') {
-      setError('File không đúng định dạng ảnh')
+      notifyError('File không hợp lệ')
       return false
     }
     if (imageFile.type !== 'image/jpeg' && imageFile.type !== 'image/png' && imageFile.type !== 'image/jpg') {
-      setError('Chỉ được up ảnh dưới dạng jpg, jpeg, png')
+      notifyError('Chỉ được up ảnh có dạng .jpeg, .jpg, .png')
       return false
     }
     if (imageFile) {
@@ -121,11 +114,7 @@ export default function AddUserModal({
     //get all user again
     setAllUserData((prev) => [...prev, response.data.user])
     //set Alert
-    setAlert({
-      severity: 'success',
-      text: 'Create user successfully!',
-    })
-    setOpenAlert(true)
+    notifySuccess('Create user successfully')
   }
   const handleOnChangeValues = (e) => {
     const name = e.target.name
