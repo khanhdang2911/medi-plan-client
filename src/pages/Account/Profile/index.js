@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import Alert from '@mui/material/Alert'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import Snackbar from '@mui/material/Snackbar'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -20,6 +18,8 @@ import authSlice from '~/redux/authSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { getAuthSelector } from '~/redux/selectors'
 import Loading from '~/components/Loading'
+import ToastContainerCustom from '~/components/ToastContainerCustom'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 function Profile() {
   const auth = useSelector(getAuthSelector)
   const dispatch = useDispatch()
@@ -28,8 +28,6 @@ function Profile() {
   const [imageFile, setImageFile] = useState(null)
   const [imageURL, setImageURL] = useState('')
   const [error, setError] = useState('')
-  const [alert, setAlert] = useState({ severity: 'success', text: '' })
-  const [openAlert, setOpenAlert] = useState(false)
   const [allValues, setAllValues] = useState({
     id: '',
     fullname: '',
@@ -39,13 +37,7 @@ function Profile() {
     gender: '0',
     image: '',
   })
-  const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
 
-    setOpenAlert(false)
-  }
   //delete image when change to another image
   useEffect(() => {
     return () => {
@@ -90,11 +82,11 @@ function Profile() {
   const handleChangeAvatar = async (e) => {
     const imageFile = e.target.files[0]
     if (imageFile.type.split('/')[0] !== 'image') {
-      setError('File không đúng định dạng ảnh')
+      notifyError('File không hợp lệ')
       return
     }
     if (imageFile.type !== 'image/jpeg' && imageFile.type !== 'image/png' && imageFile.type !== 'image/jpg') {
-      setError('Chỉ được up ảnh dưới dạng jpg, jpeg, png')
+      notifyError('File không hợp lệ')
       return
     }
     if (imageFile) {
@@ -155,15 +147,13 @@ function Profile() {
           gender: data.user?.gender ? '1' : '0',
           image: data.user?.image,
         })
-        setAlert({ severity: 'success', text: 'Cập nhật thông tin thành công' })
-        setOpenAlert(true)
+        notifySuccess('Cập nhật thông tin thành công')
         dispatch(authSlice.actions.updateUser(data.user))
       }
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      setAlert({ severity: 'error', text: 'Cập nhật thông tin thất bại' })
-      setOpenAlert(true)
+      notifyError('Cập nhật thông tin thất bại')
     }
   }
   return (
@@ -260,16 +250,7 @@ function Profile() {
           </Box>
         </Box>
       </Box>
-      <Snackbar
-        open={openAlert}
-        autoHideDuration={1000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} variant="filled" sx={{ width: '100%' }}>
-          {alert.text}
-        </Alert>
-      </Snackbar>
+      <ToastContainerCustom />
     </>
   )
 }

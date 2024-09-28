@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { useEffect, useState } from 'react'
 import { updateUserForAdmin } from '~/services/api/auth.api'
 import Loading from '~/components/Loading'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 
 const style = {
   position: 'absolute',
@@ -35,8 +36,6 @@ export default function EditUserModal({
   handleCloseModalEditUser,
   allUserData,
   setAllUserData,
-  setAlert,
-  setOpenAlert,
   userEdit,
   positions,
   roles,
@@ -77,11 +76,11 @@ export default function EditUserModal({
   const handleUploadAvatar = (e) => {
     const imageFile = e.target.files[0]
     if (imageFile.type.split('/')[0] !== 'image') {
-      setError('File không đúng định dạng ảnh')
+      notifyError('File không hợp lệ')
       return false
     }
     if (imageFile.type !== 'image/jpeg' && imageFile.type !== 'image/png' && imageFile.type !== 'image/jpg') {
-      setError('Chỉ được up ảnh dưới dạng jpg, jpeg, png')
+      notifyError('Chỉ được up ảnh có dạng .jpeg, .jpg, .png')
       return false
     }
     if (imageFile) {
@@ -148,11 +147,7 @@ export default function EditUserModal({
     })
     setAllUserData(updateUsers)
     //set Alert
-    setAlert({
-      severity: 'success',
-      text: 'Update user successfully!',
-    })
-    setOpenAlert(true)
+    notifySuccess('Update user successfully')
   }
   const handleOnChangeValues = (e) => {
     const name = e.target.name
