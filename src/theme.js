@@ -13,6 +13,7 @@ const theme = extendTheme({
           fontSize: '0.875rem',
           a: {
             textDecoration: 'none',
+            color: 'inherit',
           },
         },
       },

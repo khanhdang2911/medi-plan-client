@@ -4,6 +4,7 @@ import Avatar from '@mui/material/Avatar'
 import images from '~/assets'
 import { useEffect, useState } from 'react'
 import { getTopDoctorHome } from '~/services/api/doctor.api'
+import { Link } from 'react-router-dom'
 
 function OutstandingDoctor() {
   const [doctors, setDoctors] = useState([])
@@ -13,9 +14,7 @@ function OutstandingDoctor() {
         let response = await getTopDoctorHome(6)
         const data = response.data
         setDoctors(data.doctors)
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
     fetchDoctors()
   }, [])
@@ -45,37 +44,38 @@ function OutstandingDoctor() {
 function ManyItem(props) {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      {props.manyItems.map((item, i) => {
+      {props.manyItems.map((item) => {
         return (
-          <Box
-            key={i}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '5px',
-              borderRadius: '10px',
-              width: '341px',
-              height: '300px',
-            }}
-          >
-            <Avatar sx={{ width: '180px', height: '180px' }} src={item.image} />
-            <Typography
+          <Link key={item.id} to={`doctor-detail/${item.id}`}>
+            <Box
               sx={{
-                textAlign: 'center',
-                fontSize: '1rem',
-                fontWeight: '600',
-                mt: 1,
-                width: '70%',
-                maxHeight: '50px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '5px',
+                borderRadius: '10px',
+                width: '341px',
+                height: '300px',
               }}
             >
-              {item.positionData?.valueVi} {item.fullname}
-            </Typography>
-            <Typography sx={{ fontSize: '1rem', mt: 1 }}>Cơ xương khớp</Typography>
-          </Box>
+              <Avatar sx={{ width: '180px', height: '180px' }} src={item.image} />
+              <Typography
+                sx={{
+                  textAlign: 'center',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  mt: 1,
+                  width: '70%',
+                  maxHeight: '50px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {item.positionData?.valueVi} {item.fullname}
+              </Typography>
+              <Typography sx={{ fontSize: '1rem', mt: 1 }}>Cơ xương khớp</Typography>
+            </Box>
+          </Link>
         )
       })}
     </Box>

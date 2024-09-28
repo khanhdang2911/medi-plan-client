@@ -9,6 +9,7 @@ import Register from '~/pages/Auth/Register'
 import NotFound from '~/pages/NotFound'
 import Account from '~/pages/Account'
 import Admin from '~/pages/Admin'
+import DoctorDetail from '~/pages/DoctorDetail'
 
 const publicRoutes = [
   {
@@ -36,6 +37,11 @@ const publicRoutes = [
     path: routes.notFound,
     component: NotFound,
     layout: null,
+  },
+  {
+    path: routes.doctorDetail,
+    component: DoctorDetail,
+    layout: DefaultLayout,
   },
 ]
 
