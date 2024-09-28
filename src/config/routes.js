@@ -6,9 +6,10 @@ const routes = {
   login: '/login',
   register: '/register',
   account: '/account/*',
-  notFound: '*',
-
+  doctorDetail: '/doctor-detail/:id',
   admin: '/admin/*',
+
+  notFound: '*',
 }
 
 export default routes
