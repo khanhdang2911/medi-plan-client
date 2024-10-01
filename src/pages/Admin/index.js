@@ -5,6 +5,7 @@ import { Link, NavLink, Route, Routes } from 'react-router-dom'
 import images from '~/assets'
 import AllUserPage from './AllUserPage'
 import ManageDoctorInfo from './ManageDoctorInfo'
+import ManageDoctorSchedule from './ManageDoctorSchedule'
 function Admin() {
   return (
     <Box sx={{ display: 'flex' }}>
@@ -48,6 +49,22 @@ function Admin() {
               </Typography>
             )}
           </NavLink>
+          <NavLink to="/admin/manage-doctor-schedule">
+            {({ isActive }) => (
+              <Typography
+                sx={{
+                  color: isActive ? '#1e90ff' : '#2c3e50',
+                  fontWeight: '600',
+                  padding: '4px 2px',
+                  '&:hover': {
+                    bgcolor: '#f1f2f6',
+                  },
+                }}
+              >
+                Manage Doctor Schedule
+              </Typography>
+            )}
+          </NavLink>
         </Box>
       </Box>
       <Box sx={{ width: '85%', ml: '15%', bgcolor: '#dff9fb' }}>
@@ -76,6 +93,7 @@ function Admin() {
           <Routes>
             <Route index element={<AllUserPage />} />
             <Route path="manage-doctor-info" element={<ManageDoctorInfo />}></Route>
+            <Route path='manage-doctor-schedule' element={<ManageDoctorSchedule/>}></Route>
           </Routes>
         </Box>
       </Box>
