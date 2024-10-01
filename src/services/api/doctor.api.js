@@ -17,4 +17,9 @@ const createDetailInfoDoctor = async (data) => {
   let response = await axios.post('doctors/create-detail-info-doctor', data)
   return response
 }
-export { getTopDoctorHome, getDoctorById, getAllDoctors, createDetailInfoDoctor }
+
+const getAllTimeSpace = async () => {
+  let response = await axios.get('doctors/get-all-time-space')
+  return response
+}
+export { getTopDoctorHome, getDoctorById, getAllDoctors, createDetailInfoDoctor, getAllTimeSpace }
