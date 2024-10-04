@@ -3,13 +3,12 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
-import { getAllDoctors, getAllTimeSpace } from '~/services/api/doctor.api'
+import { createScheduleForDoctor, getAllDoctors, getAllTimeSpace } from '~/services/api/doctor.api'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import ToastContainerCustom from '~/components/ToastContainerCustom'
-import formatDate from '~/helpers/formatDate'
-import { notifyError } from '~/helpers/notify'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 const customStyles = {
   container: (provided) => ({
     ...provided,
@@ -34,7 +33,6 @@ function ManageDoctorSchedule() {
           }))
           setOptions(options)
         }
-        console.log(data)
       } catch (error) {
         console.log(error)
       }
@@ -61,10 +59,11 @@ function ManageDoctorSchedule() {
   }, [])
   const handleOnChangeOption = async (selectedOption) => {
     setSelectedOption(selectedOption)
+    //call api get schedule for doctor
   }
   const handleChangeDate = (date) => {
     setDate(date)
-    console.log(formatDate(date))
+    //call api get schedule for doctor at date selected
   }
   const handleChooseTime = (id) => {
     const newAllTime = allTime.map((time) => {
@@ -82,8 +81,8 @@ function ManageDoctorSchedule() {
       notifyError('Vui lòng chọn bác sĩ')
       return false
     }
-    const selectedTime = allTime.filter((time) => time.selected)
-    if (selectedTime.length === 0) {
+    const checkTime = allTime.some((time) => time.selected)
+    if (!checkTime) {
       notifyError('Vui lòng chọn thời gian')
       return false
     }
@@ -91,16 +90,34 @@ function ManageDoctorSchedule() {
       notifyError('Vui lòng chọn ngày')
       return false
     }
-    return {
-      selectedOption,
-      selectedTime,
-      date,
-    }
+    return true
   }
-  const handleSaveInfo = () => {
+  const handleSaveInfo = async () => {
     const checkData = handleValidateData()
     if (!checkData) return
-    console.log(checkData)
+    const selectedTime = allTime.filter((time) => time.selected)
+    const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ')
+    const dataCreate = selectedTime.map((time) => {
+      return {
+        doctorId: selectedOption.value,
+        date: formattedDate,
+        timeType: time.keyMap,
+      }
+    })
+    //call api
+    try {
+      const response = await createScheduleForDoctor(dataCreate)
+      const data = response.data
+      if (data.success === true) {
+        notifySuccess('Lưu thông tin thành công')
+      } else {
+        console.log(data.message)
+        notifyError('Lưu thông tin thất bại')
+      }
+    } catch (error) {
+      notifyError('Lưu thông tin thất bại')
+      console.log(error)
+    }
   }
   return (
     <Box sx={{ padding: 1, display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -109,6 +126,7 @@ function ManageDoctorSchedule() {
         <Select styles={customStyles} defaultValue={selectedOption} onChange={handleOnChangeOption} options={options} />
       </Box>
       <Box>
+        <Typography sx={{ fontSize: '1rem', fontWeight: 'bold', color: '#0984e3' }}>Ngày đặt lịch:</Typography>
         <DatePicker selected={date} onChange={handleChangeDate} inline minDate={new Date()} />
       </Box>
       <Box>

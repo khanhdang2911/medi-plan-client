@@ -22,4 +22,16 @@ const getAllTimeSpace = async () => {
   let response = await axios.get('doctors/get-all-time-space')
   return response
 }
-export { getTopDoctorHome, getDoctorById, getAllDoctors, createDetailInfoDoctor, getAllTimeSpace }
+
+const createScheduleForDoctor = async (data) => {
+  let response = await axios.post('doctors/create-schedule-for-doctor', data)
+  return response
+}
+export {
+  getTopDoctorHome,
+  getDoctorById,
+  getAllDoctors,
+  createDetailInfoDoctor,
+  getAllTimeSpace,
+  createScheduleForDoctor,
+}
