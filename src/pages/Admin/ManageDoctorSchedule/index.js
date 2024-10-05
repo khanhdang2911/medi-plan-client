@@ -3,12 +3,18 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
-import { createScheduleForDoctor, getAllDoctors, getAllTimeSpace } from '~/services/api/doctor.api'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
+import {
+  createScheduleForDoctor,
+  getAllDoctors,
+  getAllTimeSpace,
+  getScheduleDoctorByDate,
+} from '~/services/api/doctor.api'
 import ToastContainerCustom from '~/components/ToastContainerCustom'
 import { notifyError, notifySuccess } from '~/helpers/notify'
+import formatDate from '~/helpers/formatDate'
 const customStyles = {
   container: (provided) => ({
     ...provided,
@@ -34,7 +40,7 @@ function ManageDoctorSchedule() {
           setOptions(options)
         }
       } catch (error) {
-        console.log(error)
+        notifyError('Lấy dữ liệu thất bại')
       }
     }
     const fetchAllTimeSpace = async () => {
@@ -51,22 +57,59 @@ function ManageDoctorSchedule() {
           setAllTime(customAllTimeSpace)
         }
       } catch (error) {
-        console.log(error)
+        notifyError('Lấy dữ liệu thất bại')
       }
     }
     fetchAllDoctorData()
     fetchAllTimeSpace()
   }, [])
+  //handle update highlight all time when change date, selected doctor
+  useEffect(() => {
+    const fetchScheduleDoctor = async () => {
+      try {
+        const response = await getScheduleDoctorByDate(formatDate(date), selectedOption.value) //(date, id)
+        const data = response.data
+        const schedules = data.schedules
+        if (schedules.length > 0) {
+          const allTimeTemp = [...allTime]
+          const newAllTime = allTimeTemp.map((item) => {
+            return schedules.some((schedule) => schedule.timeType === item.keyMap)
+              ? {
+                  ...item,
+                  selected: true,
+                }
+              : item
+          })
+          setAllTime(newAllTime)
+        } else {
+          const allTimeTemp = [...allTime]
+          const newAllTime = allTimeTemp.map((item) => {
+            return {
+              ...item,
+              selected: false,
+            }
+          })
+          setAllTime(newAllTime)
+        }
+      } catch (error) {
+        notifyError('Lấy dữ liệu thất bại')
+      }
+    }
+    if (selectedOption && date) {
+      fetchScheduleDoctor()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, selectedOption])
   const handleOnChangeOption = async (selectedOption) => {
     setSelectedOption(selectedOption)
     //call api get schedule for doctor
   }
   const handleChangeDate = (date) => {
     setDate(date)
-    //call api get schedule for doctor at date selected
   }
   const handleChooseTime = (id) => {
-    const newAllTime = allTime.map((time) => {
+    const allTimeTemp = [...allTime]
+    const newAllTime = allTimeTemp.map((time) => {
       return id === time.id
         ? {
             ...time,
@@ -96,7 +139,7 @@ function ManageDoctorSchedule() {
     const checkData = handleValidateData()
     if (!checkData) return
     const selectedTime = allTime.filter((time) => time.selected)
-    const formattedDate = date.toISOString().slice(0, 19).replace('T', ' ')
+    const formattedDate = formatDate(date)
     const dataCreate = selectedTime.map((time) => {
       return {
         doctorId: selectedOption.value,
@@ -104,7 +147,8 @@ function ManageDoctorSchedule() {
         timeType: time.keyMap,
       }
     })
-    //call api
+    console.log(dataCreate)
+    // call api
     try {
       const response = await createScheduleForDoctor(dataCreate)
       const data = response.data
