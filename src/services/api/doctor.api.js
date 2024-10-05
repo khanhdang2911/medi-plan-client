@@ -27,6 +27,11 @@ const createScheduleForDoctor = async (data) => {
   let response = await axios.post('doctors/create-schedule-for-doctor', data)
   return response
 }
+
+const getScheduleDoctorByDate = async (date, doctorId) => {
+  let response = await axios.get(`doctors/get-schedule-doctor-by-date?date=${date}&&doctorId=${doctorId}`)
+  return response
+}
 export {
   getTopDoctorHome,
   getDoctorById,
@@ -34,4 +39,5 @@ export {
   createDetailInfoDoctor,
   getAllTimeSpace,
   createScheduleForDoctor,
+  getScheduleDoctorByDate,
 }
