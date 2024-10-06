@@ -7,6 +7,7 @@ import parse from 'html-react-parser'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getDoctorById } from '~/services/api/doctor.api'
+import DoctorSchedule from '~/components/DoctorSchedule'
 function DoctorDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -63,6 +64,7 @@ function DoctorDetail() {
           </Box>
         </Box>
       </Box>
+      <DoctorSchedule />
       <Divider />
       <Box sx={{ bgcolor: '#f9f9f9', display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: (theme) => theme.booking_care.WIDTH_COMMON, padding: '20px 0' }}>

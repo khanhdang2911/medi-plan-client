@@ -14,7 +14,7 @@ import {
 } from '~/services/api/doctor.api'
 import ToastContainerCustom from '~/components/ToastContainerCustom'
 import { notifyError, notifySuccess } from '~/helpers/notify'
-import formatDate from '~/helpers/formatDate'
+import formatDateFromString from '~/helpers/formatDateFromString'
 const customStyles = {
   container: (provided) => ({
     ...provided,
@@ -67,7 +67,7 @@ function ManageDoctorSchedule() {
   useEffect(() => {
     const fetchScheduleDoctor = async () => {
       try {
-        const response = await getScheduleDoctorByDate(formatDate(date), selectedOption.value) //(date, id)
+        const response = await getScheduleDoctorByDate(formatDateFromString(date), selectedOption.value) //(date, id)
         const data = response.data
         const schedules = data.schedules
         if (schedules.length > 0) {
@@ -139,7 +139,7 @@ function ManageDoctorSchedule() {
     const checkData = handleValidateData()
     if (!checkData) return
     const selectedTime = allTime.filter((time) => time.selected)
-    const formattedDate = formatDate(date)
+    const formattedDate = formatDateFromString(date)
     const dataCreate = selectedTime.map((time) => {
       return {
         doctorId: selectedOption.value,
