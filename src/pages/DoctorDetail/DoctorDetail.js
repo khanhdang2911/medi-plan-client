@@ -7,7 +7,8 @@ import parse from 'html-react-parser'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getDoctorById } from '~/services/api/doctor.api'
-import DoctorSchedule from '~/components/DoctorSchedule'
+import DoctorSchedule from '~/components/DoctorSchedule/DoctorSchedule'
+import DoctorDetailContainer from '~/styles/DoctorDetail/DoctorDetail.modules'
 function DoctorDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ function DoctorDetail() {
     fetchData()
   }, [id, navigate])
   return (
-    <Box>
+    <DoctorDetailContainer>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ width: (theme) => theme.booking_care.WIDTH_COMMON, padding: '20px 0' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -71,7 +72,7 @@ function DoctorDetail() {
           {parse(`${doctor?.DetailInfo?.content}`)}
         </Box>
       </Box>
-    </Box>
+    </DoctorDetailContainer>
   )
 }
 

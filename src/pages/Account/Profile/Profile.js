@@ -15,13 +15,11 @@ import WcIcon from '@mui/icons-material/Wc'
 import { getAccount, updateUser } from '~/services/api/auth.api'
 import { useNavigate } from 'react-router-dom'
 import authSlice from '~/redux/authSlice'
-import { useSelector, useDispatch } from 'react-redux'
-import { getAuthSelector } from '~/redux/selectors'
-import Loading from '~/components/Loading'
-import ToastContainerCustom from '~/components/ToastContainerCustom'
+import { useDispatch } from 'react-redux'
+import Loading from '~/components/Loading/Loading'
+import ToastContainerCustom from '~/components/ToastContainerCustom/ToastContainerCustom'
 import { notifyError, notifySuccess } from '~/helpers/notify'
 function Profile() {
-  const auth = useSelector(getAuthSelector)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
@@ -48,7 +46,7 @@ function Profile() {
   }, [imageURL])
   useEffect(() => {
     //get account by refresh token
-
+    let timer
     const getAccountInfo = async () => {
       try {
         setLoading(true)
@@ -67,11 +65,14 @@ function Profile() {
         } else {
           navigate('/')
         }
-        setLoading(false)
+        timer = setTimeout(() => {
+          setLoading(false)
+        }, 500)
       } catch (error) {
         setLoading(false)
         navigate('/')
       }
+      return () => clearTimeout(timer)
     }
     getAccountInfo()
   }, [navigate])
@@ -160,21 +161,15 @@ function Profile() {
     <>
       {loading && <Loading />}
       <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem', opacity: 0.9 }}>Thông tin cá nhân</Typography>
-      <Box sx={{ mt: '20px', display: 'flex', gap: 2 }}>
-        <Box>
-          {imageURL || allValues.image ? (
-            <Avatar sx={{ width: '150px', height: '150px' }} alt="Avatar" src={imageURL || allValues.image} />
-          ) : (
-            <Avatar sx={{ width: '150px', height: '150px' }} alt="Avatar">
-              {auth.user?.fullname[0]}
-            </Avatar>
-          )}
-          <Button variant="contained" component="label" sx={{ mt: 2 }}>
+      <Box className="profile-containter" sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ mt: '20px' }}>
+          <Avatar className="profile-user-avatar" alt="Avatar" src={imageURL || allValues.image} />
+          <Button className="btn-change-avatar" variant="contained" component="label" sx={{ mt: 2 }}>
             Thay ảnh đại diện
             <input onChange={handleChangeAvatar} type="file" accept="image/*" hidden />
           </Button>
         </Box>
-        <Box>
+        <Box className="profile-detail-infomation" sx={{ width: '80%' }}>
           <Typography sx={{ padding: '8px 16px', color: 'red' }}>{error}</Typography>
           <Box sx={{ display: 'flex', gap: '30px', padding: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', minWidth: '100px', gap: 1 }}>
@@ -186,7 +181,7 @@ function Profile() {
               value={allValues.fullname}
               onChange={(e) => handleChangeInfo(e)}
               size="small"
-              sx={{ width: '400px' }}
+              sx={{ width: '100%' }}
             />
           </Box>
 
@@ -195,7 +190,7 @@ function Profile() {
               <EmailIcon sx={{ fontSize: '18px' }} />
               <Typography>Email</Typography>
             </Box>
-            <TextField name="email" value={allValues.email} disabled size="small" sx={{ width: '400px' }} />
+            <TextField name="email" value={allValues.email} disabled size="small" sx={{ width: '100%' }} />
           </Box>
 
           <Box sx={{ display: 'flex', gap: '30px', padding: 1 }}>
@@ -208,7 +203,7 @@ function Profile() {
               value={allValues.address}
               onChange={(e) => handleChangeInfo(e)}
               size="small"
-              sx={{ width: '400px' }}
+              sx={{ width: '100%' }}
             />
           </Box>
 
@@ -222,7 +217,7 @@ function Profile() {
               value={allValues.phonenumber}
               onChange={(e) => handleChangeInfo(e)}
               size="small"
-              sx={{ width: '400px' }}
+              sx={{ width: '100%' }}
             />
           </Box>
           <Box sx={{ display: 'flex', gap: '30px', padding: 1 }}>

@@ -5,7 +5,8 @@ import BusinessIcon from '@mui/icons-material/Business'
 import PhoneIcon from '@mui/icons-material/Phone'
 import MailIcon from '@mui/icons-material/Mail'
 
-import images from '~/assets'
+import images from '~/assets/images'
+import FooterStyle from '~/styles/Layout/Footer.modules'
 
 const contactInfo = [
   {
@@ -57,17 +58,19 @@ const partners = [
 ]
 function Footer() {
   return (
-    <Box>
+    <FooterStyle>
       <Box sx={{ display: 'flex', justifyContent: 'center', bgcolor: '#efefef' }}>
         <Box
+          className="footer-content"
           sx={{
             width: (theme) => theme.booking_care.WIDTH_COMMON,
+            maxWidth: '100%',
             display: 'flex',
             justifyContent: 'space-between',
             padding: '20px 0',
           }}
         >
-          <Box sx={{ width: '467px' }}>
+          <Box className="footer-company-detail" sx={{ width: '40%' }}>
             {contactInfo.map((info, index) => {
               return <ContactInfo key={index} title={info.title} icon={info.icon} content={info.content} />
             })}
@@ -76,7 +79,7 @@ function Footer() {
               <img width="94px" height="36px" src={images.bocongthuong} alt="bocongthuong" />
             </Box>
           </Box>
-          <Box sx={{ width: '233px' }}>
+          <Box className="footer-policy" sx={{ width: '20%' }}>
             <Box sx={{ padding: '5px 0' }}>
               <img width="140px" height="30px" src={images.logo} alt="logo" />
             </Box>
@@ -84,7 +87,7 @@ function Footer() {
               return <ContactLink key={index} label={link.label} to={link.to} />
             })}
           </Box>
-          <Box sx={{ width: '467px' }}>
+          <Box className="footer-partner" sx={{ width: '40%' }}>
             <Typography sx={{ fontWeight: '600' }}>Đối tác bảo trợ nội dung</Typography>
             {partners.map((partner, index) => {
               return <Partner key={index} img={partner.img} title={partner.title} content={partner.content} />
@@ -97,7 +100,7 @@ function Footer() {
           <Typography sx={{ padding: '10px', color: 'white' }}>© 2024 DemoMedi-plan.</Typography>
         </Box>
       </Box>
-    </Box>
+    </FooterStyle>
   )
 }
 
