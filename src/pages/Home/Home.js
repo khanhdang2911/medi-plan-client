@@ -1,12 +1,12 @@
 import { Box } from '@mui/material'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import BannerHome from './Banner'
-import RemoteMedical from './RemoteMedical'
-import MedicalFacility from './MedicalFacility'
-import OutstandingDoctor from './OutstandingDoctor'
-import Handbook from './Handbook'
-import ToastContainerCustom from '~/components/ToastContainerCustom'
+import BannerHome from './Banner/Banner'
+import RemoteMedical from './RemoteMedical/RemoteMedical'
+import MedicalFacility from './MedicalFacility/MedicalFacility'
+import OutstandingDoctor from './OutstandingDoctor/OutstandingDoctor'
+import Handbook from './Handbook/Handbook'
+import ToastContainerCustom from '~/components/ToastContainerCustom/ToastContainerCustom'
 import { notifyError } from '~/helpers/notify'
 
 function Home() {

@@ -72,8 +72,11 @@ function DoctorSchedule() {
   }, [date, navigate, params.id])
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', padding: '10px 0' }}>
-      <Box sx={{ width: (theme) => theme.booking_care.WIDTH_COMMON, display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box
+        className="doctor-schedule-container"
+        sx={{ width: (theme) => theme.booking_care.WIDTH_COMMON, display: 'flex', justifyContent: 'space-between' }}
+      >
+        <Box className="doctor-schedule-detail" sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 1 }}>
           <FormControl sx={{ width: 150 }}>
             <Select
               size="small"
@@ -127,15 +130,15 @@ function DoctorSchedule() {
             <Typography sx={{ fontSize: '0.8rem', opacity: 0.9 }}>Chọn và đặt (Phí đặt lịch 0đ)</Typography>
           </Box>
         </Box>
-        <Box sx={{ width: '50%' }}>
-          <Box sx={{ padding: 1, borderBottom: '1px solid gray' }}>
+        <Box className="doctor-hospital-info" sx={{ width: '50%' }}>
+          <Box sx={{ pt: 1, borderBottom: '1px solid gray' }}>
             <Typography sx={{ color: 'gray' }}>ĐỊA CHỈ KHÁM</Typography>
             <Typography sx={{ fontSize: '0.9rem', fontWeight: '600' }}>Bệnh viện quốc tế City</Typography>
             <Typography sx={{ fontSize: '0.8rem', opacity: '0.9' }}>
               3 Đường Số 17A, Bình Trị Đông B, Bình Tân, Thành phố Hồ Chí Minh
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1, padding: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, pt: 1 }}>
             <Typography sx={{ color: 'gray' }}>GIÁ KHÁM:</Typography>
             <Typography>400.000đ</Typography>
             <Typography sx={{ color: (theme) => theme.booking_care.BG_COLOR, fontWeight: '600' }}>

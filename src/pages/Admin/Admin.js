@@ -2,10 +2,10 @@ import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { Link, NavLink, Route, Routes } from 'react-router-dom'
-import images from '~/assets'
-import AllUserPage from './AllUserPage'
-import ManageDoctorInfo from './ManageDoctorInfo'
-import ManageDoctorSchedule from './ManageDoctorSchedule'
+import images from '~/assets/images'
+import AllUserPage from './AllUserPage/AllUserPage'
+import ManageDoctorInfo from './ManageDoctorInfo/ManageDoctorInfo'
+import ManageDoctorSchedule from './ManageDoctorSchedule/ManageDoctorSchedule'
 function Admin() {
   return (
     <Box sx={{ display: 'flex' }}>
@@ -93,7 +93,7 @@ function Admin() {
           <Routes>
             <Route index element={<AllUserPage />} />
             <Route path="manage-doctor-info" element={<ManageDoctorInfo />}></Route>
-            <Route path='manage-doctor-schedule' element={<ManageDoctorSchedule/>}></Route>
+            <Route path="manage-doctor-schedule" element={<ManageDoctorSchedule />}></Route>
           </Routes>
         </Box>
       </Box>

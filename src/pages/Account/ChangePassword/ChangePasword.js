@@ -1,8 +1,10 @@
-import { Alert, Button, Snackbar, TextField, Typography } from '@mui/material'
+import { Button, TextField, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 import KeyIcon from '@mui/icons-material/Key'
 import { changePassword } from '~/services/api/auth.api'
+import ToastContainerCustom from '~/components/ToastContainerCustom/ToastContainerCustom'
+import { notifyError, notifySuccess } from '~/helpers/notify'
 function ChangePasword() {
   const [allValues, setAllValues] = useState({
     oldPassword: '',
@@ -10,15 +12,7 @@ function ChangePasword() {
     confirmPassword: '',
   })
   const [error, setError] = useState('')
-  const [alert, setAlert] = useState({ severity: 'success', text: '' })
-  const [openAlert, setOpenAlert] = useState(false)
-  const handleCloseAlert = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
 
-    setOpenAlert(false)
-  }
   const handleOnChange = (e) => {
     const { name, value } = e.target
     setAllValues({ ...allValues, [name]: value })
@@ -46,9 +40,8 @@ function ChangePasword() {
       })
       const data = response.data
       if (data.success === true) {
-        setAlert({ severity: 'success', text: 'Thay đổi mật khẩu thành công' })
+        notifySuccess('Thay đổi mật khẩu thành công')
         setError('')
-        setOpenAlert(true)
         setAllValues({
           oldPassword: '',
           newPassword: '',
@@ -58,9 +51,8 @@ function ChangePasword() {
         setError(data.message)
       }
     } catch (error) {
-      setAlert({ severity: 'error', text: 'Thay đổi mật khẩu thất bại' })
+      notifyError('Thay đổi mật khẩu thất bại')
       setError('')
-      setOpenAlert(true)
       setAllValues({
         oldPassword: '',
         newPassword: '',
@@ -71,52 +63,64 @@ function ChangePasword() {
   return (
     <>
       <Typography sx={{ fontWeight: 'bold', fontSize: '1.5rem', opacity: 0.9 }}>Thay đổi mật khẩu</Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
-        <Box sx={{ width: '80%' }}>
+      <Box sx={{ mt: 1 }}>
+        <Box className="change-password-container" sx={{ width: '80%' }}>
           <Typography sx={{ color: 'red', ml: 1 }}>{error}</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 1 }}>
+          <Box
+            className="change-password-area"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 1 }}
+          >
             <Box sx={{ display: 'flex', gap: 1 }}>
               <KeyIcon />
-              <Typography sx={{ minWidth: '200px' }}>Mật khẩu cũ</Typography>
+              <Typography sx={{}}>Mật khẩu cũ</Typography>
             </Box>
 
             <TextField
+              className="change-password-input"
               name="oldPassword"
               value={allValues.oldPassword}
               onChange={(e) => handleOnChange(e)}
               type="password"
               size="small"
-              sx={{ minWidth: '400px' }}
+              sx={{ width: '70%' }}
             />
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 1 }}>
+          <Box
+            className="change-password-area"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 1 }}
+          >
             <Box sx={{ display: 'flex', gap: 1 }}>
               <KeyIcon />
-              <Typography sx={{ minWidth: '200px' }}>Mật khẩu mới</Typography>
+              <Typography sx={{}}>Mật khẩu mới</Typography>
             </Box>
 
             <TextField
+              className="change-password-input"
               name="newPassword"
               value={allValues.newPassword}
               onChange={(e) => handleOnChange(e)}
               type="password"
               size="small"
-              sx={{ minWidth: '400px' }}
+              sx={{ width: '70%' }}
             />
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 1 }}>
+          <Box
+            className="change-password-area"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 1 }}
+          >
             <Box sx={{ display: 'flex', gap: 1 }}>
               <KeyIcon />
-              <Typography sx={{ minWidth: '200px' }}>Nhập lại mật khẩu</Typography>
+              <Typography sx={{}}>Nhập lại mật khẩu</Typography>
             </Box>
 
             <TextField
+              className="change-password-input"
               name="confirmPassword"
               value={allValues.confirmPassword}
               onChange={(e) => handleOnChange(e)}
               type="password"
               size="small"
-              sx={{ minWidth: '400px' }}
+              sx={{ width: '70%' }}
             />
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'end', mt: 1 }}>
@@ -126,17 +130,7 @@ function ChangePasword() {
           </Box>
         </Box>
       </Box>
-
-      <Snackbar
-        open={openAlert}
-        autoHideDuration={1000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} variant="filled" sx={{ width: '100%' }}>
-          {alert.text}
-        </Alert>
-      </Snackbar>
+      <ToastContainerCustom />
     </>
   )
 }

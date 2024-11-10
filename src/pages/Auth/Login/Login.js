@@ -5,7 +5,7 @@ import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-i
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames/bind'
 import styles from './Login.module.scss'
-import InputField from '~/components/InputField'
+import InputField from '~/components/InputField/InputField'
 import useForm from '~/hooks/useForm'
 import { loginUser } from '~/services/api/auth.api'
 import authSlice from '~/redux/authSlice'

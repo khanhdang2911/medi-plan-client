@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Fragment } from 'react'
 
 import { authRoutes, privateRoutes, publicRoutes } from './routes'
-import DefaultLayout from './layouts/DefaultLayout'
-import Anonymous from './components/Anonymous'
-import AuthenticatedPage from './components/AuthenticatedPage'
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout'
+import Anonymous from './components/Anonymous/Anonymous'
+import AuthenticatedPage from './components/AuthenticatedPage/AuthenticatedPage'
 function App() {
   return (
     <Router>

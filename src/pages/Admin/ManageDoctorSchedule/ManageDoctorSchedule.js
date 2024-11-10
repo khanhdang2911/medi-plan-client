@@ -12,7 +12,7 @@ import {
   getAllTimeSpace,
   getScheduleDoctorByDate,
 } from '~/services/api/doctor.api'
-import ToastContainerCustom from '~/components/ToastContainerCustom'
+import ToastContainerCustom from '~/components/ToastContainerCustom/ToastContainerCustom'
 import { notifyError, notifySuccess } from '~/helpers/notify'
 import formatDateFromString from '~/helpers/formatDateFromString'
 const customStyles = {

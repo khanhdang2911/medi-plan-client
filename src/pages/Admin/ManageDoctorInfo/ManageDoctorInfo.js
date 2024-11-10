@@ -6,7 +6,7 @@ import Select from 'react-select'
 import { Editor } from '@tinymce/tinymce-react'
 import { Button, Typography } from '@mui/material'
 import { createDetailInfoDoctor, getAllDoctors, getDoctorById } from '~/services/api/doctor.api'
-import ToastContainerCustom from '~/components/ToastContainerCustom'
+import ToastContainerCustom from '~/components/ToastContainerCustom/ToastContainerCustom'
 import { notifyError, notifySuccess } from '~/helpers/notify'
 const customStyles = {
   container: (provided) => ({
