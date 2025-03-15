@@ -56,7 +56,7 @@ function OutstandingDoctor() {
           Bác sĩ nổi bật
         </Typography>
         <Carousel className="doctor-carousel" responsive={responsive} arrows={true}>
-          {doctors.map((item, i) => {
+          {doctors && doctors.map((item, i) => {
             return <Item key={i} {...item} />
           })}
         </Carousel>

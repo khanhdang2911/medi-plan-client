@@ -5,12 +5,12 @@ import authSlice from '~/redux/authSlice'
 import { store } from '~/redux/store'
 // Set config defaults when creating the instance
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_API_URL,
+  baseURL: process.env.REACT_APP_BACKEND_API_URL + '/api',
   withCredentials: true,
 })
 
 const refreshInstance = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_API_URL,
+  baseURL: process.env.REACT_APP_BACKEND_API_URL + '/api',
   withCredentials: true,
 })
 
